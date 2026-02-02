@@ -25,6 +25,19 @@ input {
   font-size: 16px;
   margin-top: 5px;
 }
+button {
+  margin-top: 30px;
+  padding: 12px 20px;
+  font-size: 18px;
+  background-color: #25D366;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #128C7E;
+}
 </style>
 </head>
 
@@ -32,27 +45,19 @@ input {
 
 <h2>Invio dati</h2>
 
-<!-- COMANDO -->
 <label for="comando">Comando VVF</label>
 <select id="comando" disabled></select>
 
-<!-- PREFISSO -->
 <label for="prefisso">Prefisso internazionale</label>
 <select id="prefisso" disabled></select>
 
-<!-- NUMERO -->
 <label for="numero">Numero di telefono</label>
-<input
-  type="tel"
-  id="numero"
-  placeholder="Es. 3331234567"
-  inputmode="numeric"
-  pattern="[0-9]*"
-/>
+<input type="tel" id="numero" placeholder="Es. 3331234567" inputmode="numeric" pattern="[0-9]*" />
 
-<!-- LINGUA -->
 <label for="lingua">Lingua</label>
 <select id="lingua"></select>
+
+<button id="whatsappBtn">Apri WhatsApp</button>
 
 <script>
 // ================= CONFIG =================
@@ -61,10 +66,7 @@ const CSV_URL =
 
 // ================= UTILS =================
 const parseCSV = csv =>
-  csv
-    .trim()
-    .split("\n")
-    .map(r => r.split(",").map(c => c.trim()));
+  csv.trim().split("\n").map(r => r.split(",").map(c => c.trim()));
 
 const buildSelect = (id, options, placeholder, storedValue = null) => {
   const select = document.getElementById(id);
@@ -87,12 +89,10 @@ const buildSelect = (id, options, placeholder, storedValue = null) => {
     placeholderValue: placeholder
   });
 
-  // RIPRISTINO VALORE SALVATO
   if (storedValue) {
     choices.setChoiceByValue(storedValue);
   }
 
-  // SALVATAGGIO SU LOCALSTORAGE
   select.addEventListener("change", () => {
     localStorage.setItem(id, select.value);
   });
@@ -104,15 +104,14 @@ const buildSelect = (id, options, placeholder, storedValue = null) => {
 fetch(CSV_URL)
   .then(r => r.text())
   .then(csv => {
-    const rows = parseCSV(csv).slice(1); // salta intestazione
+    const rows = parseCSV(csv).slice(1);
 
-    // ---- COMANDI (col A) ----
-    const comandi = [...new Set(
-      rows.map(r => r[0]).filter(Boolean)
-    )].map(c => ({ value: c, label: c }));
+    // COMANDI (col A)
+    const comandi = [...new Set(rows.map(r => r[0]).filter(Boolean))]
+      .map(c => ({ value: c, label: c }));
     buildSelect("comando", comandi, "Seleziona comando", localStorage.getItem("comando"));
 
-    // ---- PREFISSI (col B + C) ----
+    // PREFISSI (col B+C)
     const prefissi = rows
       .filter(r => r[1] && r[2])
       .map(r => ({ label: r[1], value: r[2] }));
@@ -126,7 +125,6 @@ numeroInput.addEventListener("input", e => {
   e.target.value = e.target.value.replace(/\D/g, "");
   localStorage.setItem("numero", e.target.value);
 });
-// RIPRISTINO NUMERO
 numeroInput.value = localStorage.getItem("numero") || "";
 
 // ================= DROPDOWN LINGUE =================
@@ -150,8 +148,29 @@ const lingue = [
 ].map(l => ({ value: l, label: l }));
 
 buildSelect("lingua", lingue, "Seleziona lingua", localStorage.getItem("lingua"));
+
+// ================= PULSANTE WHATSAPP =================
+document.getElementById("whatsappBtn").addEventListener("click", () => {
+  const comando = document.getElementById("comando").value;
+  const prefisso = document.getElementById("prefisso").value;
+  const numero = document.getElementById("numero").value;
+  const lingua = document.getElementById("lingua").value;
+
+  if (!comando || !prefisso || !numero || !lingua) {
+    alert("Compila tutti i campi prima di inviare.");
+    return;
+  }
+
+  // ======================================
+  // Qui inserirai il template del messaggio
+  // Ad esempio:
+  let messaggio = `Comando: ${comando}\nLingua: ${lingua}\nNumero: ${prefisso}${numero}`;
+  // ======================================
+
+  const url = `https://web.whatsapp.com/send?phone=${prefisso}${numero}&text=${encodeURIComponent(messaggio)}`;
+  window.open(url, "_blank");
+});
 </script>
 
 </body>
 </html>
-
