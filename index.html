@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Elenco dinamico da Google Sheets</title>
+
+  <!-- Choices.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Seleziona una voce</h2>
+
+<select id="elenco">
+  <option value="">Caricamento...</option>
+</select>
+
+<script>
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=0&single=true&output=csv";
+
+fetch(sheetURL)
+  .then(res => res.text())
+  .then(csv => {
+    const rows = csv.split("\n").slice(1); // salta intestazione
+    const select = document.getElementById("elenco");
+    select.innerHTML = "";
+
+    rows.forEach(r => {
+      const cols = r.split(",");
+      if (!cols[0]) return;
+
+      const option = document.createElement("option");
+      option.value = cols[0];
+      option.textContent = cols[0];
+      select.appendChild(option);
+    });
+
+    new Choices(select, {
+      searchEnabled: true,
+      shouldSort: false,
+      itemSelectText: '',
+      placeholderValue: 'Seleziona...'
+    });
+  })
+  .catch(err => {
+    document.getElementById("elenco").innerHTML =
+      "<option>Errore caricamento dati</option>";
+    console.error(err);
+  });
+</script>
+
+</body>
+</html>
