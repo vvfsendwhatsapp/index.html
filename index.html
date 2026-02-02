@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Selezione dinamica VVF</title>
+<title>Selezione VVF</title>
 
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
@@ -34,12 +34,8 @@ label {
 
 <script>
 // ================= CONFIG =================
-const URLS = {
-  comandi:
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=1285745149&single=true&output=csv",
-  prefissi:
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=363283712&single=true&output=csv"
-};
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=976441910&single=true&output=csv";
 
 // ================= UTILS =================
 const parseCSV = csv =>
@@ -48,18 +44,18 @@ const parseCSV = csv =>
     .split("\n")
     .map(r => r.split(",").map(c => c.trim()));
 
-const buildSelect = (selectId, options, placeholder) => {
-  const select = document.getElementById(selectId);
+const buildSelect = (id, options, placeholder) => {
+  const select = document.getElementById(id);
+  const frag = document.createDocumentFragment();
 
-  const fragment = document.createDocumentFragment();
   options.forEach(o => {
     const opt = document.createElement("option");
     opt.value = o.value;
     opt.textContent = o.label;
-    fragment.appendChild(opt);
+    frag.appendChild(opt);
   });
 
-  select.appendChild(fragment);
+  select.appendChild(frag);
   select.disabled = false;
 
   return new Choices(select, {
@@ -70,33 +66,27 @@ const buildSelect = (selectId, options, placeholder) => {
   });
 };
 
-// ================= LOAD DATA =================
-Promise.all([
-  fetch(URLS.comandi).then(r => r.text()),
-  fetch(URLS.prefissi).then(r => r.text())
-])
-.then(([comandiCSV, prefissiCSV]) => {
+// ================= LOAD =================
+fetch(CSV_URL)
+  .then(r => r.text())
+  .then(csv => {
+    const rows = parseCSV(csv).slice(1); // salta intestazione
 
-  // ---- COMANDI: col A, da A15 ----
-  const comandiRows = parseCSV(comandiCSV).slice(14);
-  const comandi = comandiRows
-    .filter(r => r[0])
-    .map(r => ({ value: r[0], label: r[0] }));
+    // ---- COMANDI (col A) ----
+    const comandi = [...new Set(
+      rows.map(r => r[0]).filter(Boolean)
+    )].map(c => ({ value: c, label: c }));
 
-  buildSelect("comando", comandi, "Seleziona comando");
+    buildSelect("comando", comandi, "Seleziona comando");
 
-  // ---- PREFISSI: col C value, col E label ----
-  const prefissiRows = parseCSV(prefissiCSV).slice(1);
-  const prefissi = prefissiRows
-    .filter(r => r[2] && r[4])
-    .map(r => ({ value: r[2], label: r[4] }));
+    // ---- PREFISSI (col B + C) ----
+    const prefissi = rows
+      .filter(r => r[1] && r[2])
+      .map(r => ({ label: r[1], value: r[2] }));
 
-  buildSelect("prefisso", prefissi, "Seleziona prefisso");
-
-})
-.catch(err => {
-  console.error("Errore caricamento dati:", err);
-});
+    buildSelect("prefisso", prefissi, "Seleziona prefisso");
+  })
+  .catch(err => console.error("Errore CSV:", err));
 </script>
 
 </body>
