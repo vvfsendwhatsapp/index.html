@@ -1,61 +1,101 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Elenco dinamico da Google Sheets</title>
+<meta charset="UTF-8">
+<title>Selezione Comando e Prefisso</title>
 
-  <!-- Choices.js -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<!-- Choices.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-    }
-  </style>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 720px;
+  margin: 40px auto;
+}
+label {
+  font-weight: bold;
+  margin-top: 20px;
+  display: block;
+}
+</style>
 </head>
+
 <body>
 
-<h2>Seleziona una voce</h2>
+<h2>Invio dati</h2>
 
-<select id="elenco">
-  <option value="">Caricamento...</option>
-</select>
+<!-- COMANDO -->
+<label for="comando">Comando VVF</label>
+<select id="comando"></select>
+
+<!-- PREFISSO -->
+<label for="prefisso">Prefisso internazionale</label>
+<select id="prefisso"></select>
 
 <script>
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=0&single=true&output=csv";
+// ================= COMANDI VVF =================
+const comandiURL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=1285745149&single=true&output=csv";
 
-fetch(sheetURL)
-  .then(res => res.text())
+fetch(comandiURL)
+  .then(r => r.text())
   .then(csv => {
-    const rows = csv.split("\n").slice(1); // salta intestazione
-    const select = document.getElementById("elenco");
-    select.innerHTML = "";
+    const rows = csv.split("\n").slice(14); // A15 in poi
+    const select = document.getElementById("comando");
 
-    rows.forEach(r => {
-      const cols = r.split(",");
-      if (!cols[0]) return;
+    rows.forEach(row => {
+      const value = row.split(",")[0]?.trim();
+      if (!value) return;
 
-      const option = document.createElement("option");
-      option.value = cols[0];
-      option.textContent = cols[0];
-      select.appendChild(option);
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = value;
+      select.appendChild(opt);
     });
 
     new Choices(select, {
       searchEnabled: true,
-      shouldSort: false,
+      shouldSort: true,
       itemSelectText: '',
-      placeholderValue: 'Seleziona...'
+      placeholderValue: 'Seleziona comando'
     });
   })
-  .catch(err => {
-    document.getElementById("elenco").innerHTML =
-      "<option>Errore caricamento dati</option>";
-    console.error(err);
-  });
+  .catch(err => console.error("Errore comandi:", err));
+
+
+// ================= PREFISSI INTERNAZIONALI =================
+const prefissiURL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=363283712&single=true&output=csv";
+
+fetch(prefissiURL)
+  .then(r => r.text())
+  .then(csv => {
+    const rows = csv.split("\n").slice(1);
+    const select = document.getElementById("prefisso");
+
+    rows.forEach(row => {
+      const cols = row.split(",");
+      const value = cols[2]?.trim(); // colonna C
+      const label = cols[4]?.trim(); // colonna E
+
+      if (!value || !label) return;
+
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = label;
+      select.appendChild(opt);
+    });
+
+    new Choices(select, {
+      searchEnabled: true,
+      shouldSort: true,
+      itemSelectText: '',
+      placeholderValue: 'Seleziona prefisso'
+    });
+  })
+  .catch(err => console.error("Errore prefissi:", err));
 </script>
 
 </body>
