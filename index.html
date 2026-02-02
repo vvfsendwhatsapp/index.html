@@ -19,6 +19,12 @@ label {
   margin-top: 20px;
   display: block;
 }
+input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  margin-top: 5px;
+}
 </style>
 </head>
 
@@ -26,11 +32,27 @@ label {
 
 <h2>Invio dati</h2>
 
+<!-- COMANDO -->
 <label for="comando">Comando VVF</label>
 <select id="comando" disabled></select>
 
+<!-- PREFISSO -->
 <label for="prefisso">Prefisso internazionale</label>
 <select id="prefisso" disabled></select>
+
+<!-- NUMERO -->
+<label for="numero">Numero di telefono</label>
+<input
+  type="tel"
+  id="numero"
+  placeholder="Es. 3331234567"
+  inputmode="numeric"
+  pattern="[0-9]*"
+/>
+
+<!-- LINGUA -->
+<label for="lingua">Lingua</label>
+<select id="lingua"></select>
 
 <script>
 // ================= CONFIG =================
@@ -66,7 +88,7 @@ const buildSelect = (id, options, placeholder) => {
   });
 };
 
-// ================= LOAD =================
+// ================= LOAD CSV =================
 fetch(CSV_URL)
   .then(r => r.text())
   .then(csv => {
@@ -76,17 +98,42 @@ fetch(CSV_URL)
     const comandi = [...new Set(
       rows.map(r => r[0]).filter(Boolean)
     )].map(c => ({ value: c, label: c }));
-
     buildSelect("comando", comandi, "Seleziona comando");
 
     // ---- PREFISSI (col B + C) ----
     const prefissi = rows
       .filter(r => r[1] && r[2])
       .map(r => ({ label: r[1], value: r[2] }));
-
     buildSelect("prefisso", prefissi, "Seleziona prefisso");
   })
   .catch(err => console.error("Errore CSV:", err));
+
+// ================= VALIDAZIONE NUMERO =================
+document.getElementById("numero").addEventListener("input", e => {
+  e.target.value = e.target.value.replace(/\D/g, "");
+});
+
+// ================= DROPDOWN LINGUE =================
+const lingue = [
+  "ITALIANO",
+  "ITALIANO Invio Promemoria intervento/chiamata",
+  "ITALIANO con GEOLOC",
+  "ITALIANO informazioni Comando",
+  "ITALIANO Invio coordinate a squadre VF",
+  "INGLESE",
+  "FRANCESE",
+  "TEDESCO",
+  "SPAGNOLO",
+  "RUSSO",
+  "OLANDESE",
+  "SLOVENO",
+  "SLOVACCO",
+  "CINESE",
+  "ARABO",
+  "ALBANESE"
+].map(l => ({ value: l, label: l }));
+
+buildSelect("lingua", lingue, "Seleziona lingua");
 </script>
 
 </body>
