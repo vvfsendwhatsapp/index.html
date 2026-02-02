@@ -2,10 +2,10 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Selezione Comando e Prefisso</title>
+<title>Selezione dinamica VVF</title>
 
-<!-- Choices.js -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
 <style>
@@ -26,76 +26,77 @@ label {
 
 <h2>Invio dati</h2>
 
-<!-- COMANDO -->
 <label for="comando">Comando VVF</label>
-<select id="comando"></select>
+<select id="comando" disabled></select>
 
-<!-- PREFISSO -->
 <label for="prefisso">Prefisso internazionale</label>
-<select id="prefisso"></select>
+<select id="prefisso" disabled></select>
 
 <script>
-// ================= COMANDI VVF =================
-const comandiURL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=1285745149&single=true&output=csv";
+// ================= CONFIG =================
+const URLS = {
+  comandi:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=1285745149&single=true&output=csv",
+  prefissi:
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=363283712&single=true&output=csv"
+};
 
-fetch(comandiURL)
-  .then(r => r.text())
-  .then(csv => {
-    const rows = csv.split("\n").slice(14); // A15 in poi
-    const select = document.getElementById("comando");
+// ================= UTILS =================
+const parseCSV = csv =>
+  csv
+    .trim()
+    .split("\n")
+    .map(r => r.split(",").map(c => c.trim()));
 
-    rows.forEach(row => {
-      const value = row.split(",")[0]?.trim();
-      if (!value) return;
+const buildSelect = (selectId, options, placeholder) => {
+  const select = document.getElementById(selectId);
 
-      const opt = document.createElement("option");
-      opt.value = value;
-      opt.textContent = value;
-      select.appendChild(opt);
-    });
+  const fragment = document.createDocumentFragment();
+  options.forEach(o => {
+    const opt = document.createElement("option");
+    opt.value = o.value;
+    opt.textContent = o.label;
+    fragment.appendChild(opt);
+  });
 
-    new Choices(select, {
-      searchEnabled: true,
-      shouldSort: true,
-      itemSelectText: '',
-      placeholderValue: 'Seleziona comando'
-    });
-  })
-  .catch(err => console.error("Errore comandi:", err));
+  select.appendChild(fragment);
+  select.disabled = false;
 
+  return new Choices(select, {
+    searchEnabled: true,
+    shouldSort: true,
+    itemSelectText: '',
+    placeholderValue: placeholder
+  });
+};
 
-// ================= PREFISSI INTERNAZIONALI =================
-const prefissiURL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vQ43tX6arNVgy_qw1nWFbCH_OHg-1Y7msl8pnhXzER67OaF2R5onlwHd_a5kMyPI2Uj12olSZnbXB3O/pub?gid=363283712&single=true&output=csv";
+// ================= LOAD DATA =================
+Promise.all([
+  fetch(URLS.comandi).then(r => r.text()),
+  fetch(URLS.prefissi).then(r => r.text())
+])
+.then(([comandiCSV, prefissiCSV]) => {
 
-fetch(prefissiURL)
-  .then(r => r.text())
-  .then(csv => {
-    const rows = csv.split("\n").slice(1);
-    const select = document.getElementById("prefisso");
+  // ---- COMANDI: col A, da A15 ----
+  const comandiRows = parseCSV(comandiCSV).slice(14);
+  const comandi = comandiRows
+    .filter(r => r[0])
+    .map(r => ({ value: r[0], label: r[0] }));
 
-    rows.forEach(row => {
-      const cols = row.split(",");
-      const value = cols[2]?.trim(); // colonna C
-      const label = cols[4]?.trim(); // colonna E
+  buildSelect("comando", comandi, "Seleziona comando");
 
-      if (!value || !label) return;
+  // ---- PREFISSI: col C value, col E label ----
+  const prefissiRows = parseCSV(prefissiCSV).slice(1);
+  const prefissi = prefissiRows
+    .filter(r => r[2] && r[4])
+    .map(r => ({ value: r[2], label: r[4] }));
 
-      const opt = document.createElement("option");
-      opt.value = value;
-      opt.textContent = label;
-      select.appendChild(opt);
-    });
+  buildSelect("prefisso", prefissi, "Seleziona prefisso");
 
-    new Choices(select, {
-      searchEnabled: true,
-      shouldSort: true,
-      itemSelectText: '',
-      placeholderValue: 'Seleziona prefisso'
-    });
-  })
-  .catch(err => console.error("Errore prefissi:", err));
+})
+.catch(err => {
+  console.error("Errore caricamento dati:", err);
+});
 </script>
 
 </body>
