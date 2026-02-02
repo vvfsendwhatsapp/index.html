@@ -66,7 +66,7 @@ const parseCSV = csv =>
     .split("\n")
     .map(r => r.split(",").map(c => c.trim()));
 
-const buildSelect = (id, options, placeholder) => {
+const buildSelect = (id, options, placeholder, storedValue = null) => {
   const select = document.getElementById(id);
   const frag = document.createDocumentFragment();
 
@@ -80,12 +80,24 @@ const buildSelect = (id, options, placeholder) => {
   select.appendChild(frag);
   select.disabled = false;
 
-  return new Choices(select, {
+  const choices = new Choices(select, {
     searchEnabled: true,
     shouldSort: true,
     itemSelectText: '',
     placeholderValue: placeholder
   });
+
+  // RIPRISTINO VALORE SALVATO
+  if (storedValue) {
+    choices.setChoiceByValue(storedValue);
+  }
+
+  // SALVATAGGIO SU LOCALSTORAGE
+  select.addEventListener("change", () => {
+    localStorage.setItem(id, select.value);
+  });
+
+  return choices;
 };
 
 // ================= LOAD CSV =================
@@ -98,20 +110,24 @@ fetch(CSV_URL)
     const comandi = [...new Set(
       rows.map(r => r[0]).filter(Boolean)
     )].map(c => ({ value: c, label: c }));
-    buildSelect("comando", comandi, "Seleziona comando");
+    buildSelect("comando", comandi, "Seleziona comando", localStorage.getItem("comando"));
 
     // ---- PREFISSI (col B + C) ----
     const prefissi = rows
       .filter(r => r[1] && r[2])
       .map(r => ({ label: r[1], value: r[2] }));
-    buildSelect("prefisso", prefissi, "Seleziona prefisso");
+    buildSelect("prefisso", prefissi, "Seleziona prefisso", localStorage.getItem("prefisso"));
   })
   .catch(err => console.error("Errore CSV:", err));
 
 // ================= VALIDAZIONE NUMERO =================
-document.getElementById("numero").addEventListener("input", e => {
+const numeroInput = document.getElementById("numero");
+numeroInput.addEventListener("input", e => {
   e.target.value = e.target.value.replace(/\D/g, "");
+  localStorage.setItem("numero", e.target.value);
 });
+// RIPRISTINO NUMERO
+numeroInput.value = localStorage.getItem("numero") || "";
 
 // ================= DROPDOWN LINGUE =================
 const lingue = [
@@ -133,8 +149,9 @@ const lingue = [
   "ALBANESE"
 ].map(l => ({ value: l, label: l }));
 
-buildSelect("lingua", lingue, "Seleziona lingua");
+buildSelect("lingua", lingue, "Seleziona lingua", localStorage.getItem("lingua"));
 </script>
 
 </body>
 </html>
+
