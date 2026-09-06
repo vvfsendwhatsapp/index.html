@@ -1342,7 +1342,8 @@ function mostraComandoAfferente(sigla, nome){
        e il vertice finale resta coperto dalla figura. */
     const g = NS.SITAC_DECO(dc.tipo,
       {col, pieno, n: dc.n, forma: dc.forma, dim: dc.dim, testo: dc.testo,
-       aperta: dc.aperta, incl: dc.incl, fuori: dc.fuori, lato, giro});
+       aperta: dc.aperta, incl: dc.incl, fuori: dc.fuori, bordoW: dc.bordoW,
+       lato, giro});
 
     /* `passo:'auto'` sono i motivi che si toccano fra loro — i triangoli
        della difesa in linea, la greca della ricognizione, i denti del fronte:
