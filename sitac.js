@@ -1361,7 +1361,12 @@ function mostraComandoAfferente(sigla, nome){
           icon: L.divIcon({
             className: 'sitac-deco' + (dc.classe ? ' ' + dc.classe : ''),
             iconSize:[g.w, g.h],
-            iconAnchor:[g.w / 2, g.h / 2], html: NS.SITAC_DECO_SVG(g)})}})};
+            /* `g.fuori` sposta il glifo di traverso al tracciato spostando
+               l'ancora: il disegno resta dentro il proprio riquadro — una
+               traslazione interna lo taglierebbe — e a muoversi è il punto
+               che va a finire sulla linea. */
+            iconAnchor:[g.w / 2 - (g.fuori || 0), g.h / 2],
+            html: NS.SITAC_DECO_SVG(g)})}})};
   }
 
     /* Da che parte del tracciato sta il punto cliccato. Si misura in pixel

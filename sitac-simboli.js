@@ -696,8 +696,11 @@ function decoGlifo(tipo, opz){
         + ` fill="${pieno ? col : '#fff'}" stroke="${col}"`
         + ` stroke-width="${pieno ? 1.2 : 2.2}" stroke-linejoin="round"`
         + ` stroke-linecap="butt"/>`;
-      if (gr || sp)
-        d = `<g transform="translate(${f(sp)} 0) rotate(${f(gr)} ${f(cx)} ${f(cy)})">${d}</g>`;
+      if (gr) d = `<g transform="rotate(${f(gr)} ${f(cx)} ${f(cy)})">${d}</g>`;
+      /* Lo spostamento di traverso NON si fa qui: traslando il disegno
+         uscirebbe dal viewBox e verrebbe tagliato. Si dichiara e lo applica
+         `motivo()` spostando l'ANCORA dell'icona, che è il punto del glifo
+         che va a cadere sul tracciato. */
       break;
     }
 
@@ -898,7 +901,7 @@ function decoGlifo(tipo, opz){
       w = h = dim;
   }
 
-  return {w, h, html: d};
+  return {w, h, html: d, fuori: (o.fuori || 0) * lato};
 }
 
 /* Icona pronta per PolylineDecorator / per l'anteprima. */
@@ -1008,9 +1011,9 @@ aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','
    fascia spessa il tratteggio diventa una fila di quadrotti. */
 aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
   {color:'#ffffff', weight:5, lineCap:'butt', className:'sitac-ombra'},
-  {stati:1, lato:1, punti2:1, bordo:C.rosso,
+  {stati:1, lato:1, punti2:1, vuota:1, bordo:C.rosso,
    guaina:{weight:9, lineCap:'butt', className:'sitac-ombra'},
-   deco:{tipo:'punta', dim:24, passo:0, offset:'100%', incl:90, pieno:1, fuori:16}});
+   deco:{tipo:'punta', dim:24, passo:0, offset:'100%', incl:90, pieno:1, fuori:9}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
