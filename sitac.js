@@ -1365,7 +1365,7 @@ function mostraComandoAfferente(sigla, nome){
                l'ancora: il disegno resta dentro il proprio riquadro — una
                traslazione interna lo taglierebbe — e a muoversi è il punto
                che va a finire sulla linea. */
-            iconAnchor:[g.w / 2 - (g.fuori || 0), g.h / 2],
+            iconAnchor:[g.w / 2 + (g.fuori || 0), g.h / 2],
             html: NS.SITAC_DECO_SVG(g)})}})};
   }
 
