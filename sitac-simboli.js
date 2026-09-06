@@ -449,6 +449,9 @@ agg('vento_moderato','evoluzione',null,'Direzione del vento, intensit\u00e0 mode
   direzione('45', 2), {r:1, r0:0, senzaDisco:1});
 agg('vento_forte','evoluzione',null,'Direzione del vento, intensit\u00e0 forte','Wind direction, strong',
   direzione('45', 3), {r:1, r0:0, senzaDisco:1});
+  
+agg('altro','evoluzione',null,'prova','Wind direction, strong',
+  direzione('45', 3), {r:1, r0:90, senzaDisco:1});
 
 /* ---- TAVOLA 3: il dispositivo di intervento ---- */
 agg('can','dispositivo','sgAereo','Canadair','Canadair', mezzoAereo('CAN'), {s:1, e:1, lbl:'ID CAN'});
