@@ -1593,9 +1593,27 @@ function mostraComandoAfferente(sigla, nome){
       (allungabile && layer._lung) || distanzaManiglia());
     if (senzAsta){
       const rc = (NS.SITAC_CODINE || {})[layer._tipo] || {forma:'T', n:1};
+      /* L'asta È il simbolo, quindi deve rispondere come un simbolo: il
+         punto d'origine è invisibile e largo 22px, e cercarlo per aprire il
+         menu su una freccia lunga mezzo schermo non lo fa nessuno.
+         `weight` sottile per il disegno, `pmIgnore` perché Geoman non deve
+         metterci vertici: la geometria la comanda la maniglia. */
       layer._asta = L.polyline([c, p],
-        {color: COL.nero, weight: 2.8, interactive: false, pmIgnore: true})
-        .addTo(layer._gruppo);
+        {color: COL.nero, weight: 2.8, pmIgnore: true,
+         bubblingMouseEvents: false}).addTo(layer._gruppo);
+      layer._asta.on('click', () => {
+        if (attesaClic || attesaDirezione || attesaElemento) return;
+        selezionaElemento(layer);
+      });
+      layer._asta.on('contextmenu', ev => {
+        if (ev.originalEvent){
+          L.DomEvent.preventDefault(ev.originalEvent);
+          L.DomEvent.stopPropagation(ev.originalEvent);
+        }
+        if (attesaClic || attesaDirezione || attesaElemento) return;
+        selezionaElemento(layer);
+        apriMenu(ev.containerPoint, vociMenu(layer));
+      });
       const finto = {color: COL.nero};
       layer._astaDeco = L.polylineDecorator(layer._asta, {patterns: [
         motivo(finto, {tipo:'punta', dim:20, pieno:1, passo:0, offset:'100%'}, 'attivo', 1),
@@ -2495,6 +2513,27 @@ function mostraComandoAfferente(sigla, nome){
     stato(`${nm(SIM[l._tipo])}\n${t('dirSegui')}`);
   }
 
+    /* Su pendenza e vento l'intensità NON è un campo: è il simbolo stesso —
+     pend_lieve, pend_moderata, pend_forte sono tre voci di tavola distinte.
+     Cambiarla vuol dire scambiare il tipo tenendo tutto il resto, che è
+     quello che si vuole davvero quando si corregge una stima a vista.
+     Il simbolo si ricostruisce da capo perché il numero di codine sta nel
+     glifo del decoratore, non in un attributo. */
+  async function cambiaIntensita(l){
+    const fam = /^pend_/.test(l._tipo) ? 'pend_' : 'vento_';
+    const voci = Object.keys(SIM)
+      .filter(k => k.indexOf(fam) === 0)
+      .map(k => ({k, et: nm(SIM[k]) + (k === l._tipo ? ' \u2713' : '')}));
+    const nuovo = await scegli({testo: t('conoIntensita'), voci});
+    if (!nuovo || nuovo === l._tipo) return;
+    l._tipo = nuovo;
+    l.setIcon(iconaSimbolo(nuovo, {stato:l._stato, testo:l._testo,
+      rotazione:l._rotazione}));
+    creaManiglia(l);          // il decoratore rinasce col numero giusto di codine
+    etichettaElemento(l);
+    aggiornaStato();
+  }
+
   /* Lo stato si scambia sul singolo elemento, non sulla tavola: quando una
      squadra prevista entra in azione si cambia quella, non tutte. */
   function scambiaStatoElemento(l){
@@ -2562,8 +2601,13 @@ function mostraComandoAfferente(sigla, nome){
       if (def && def.paese)
         voci.push({et: t('menuPaese'), fai: () => cambiaPaese(l)});
       if (def && def.r)
+        voci.push({et: t('menuSposta'), fai: () => spostaElemento(l)});
+      if (def && def.r)
         voci.push({et: t('menuDirezione'), fai: () => ridaiDirezione(l)});
-      voci.push({et: t('menuSposta'), fai: () => spostaElemento(l)});
+      /* Solo pendenza e vento: sugli altri orientabili — TP, lanci —
+         l'intensità non esiste come concetto. */
+      if (/^(pend_|vento_)/.test(l._tipo || ''))
+        voci.push({et: t('menuVentoInt'), fai: () => cambiaIntensita(l)});
     } else {
       voci.push({et: t('menuVertici'), fai: () => modificaVertici(l)});
       voci.push({et: t('menuSposta'),  fai: () => spostaElemento(l)});
