@@ -1468,7 +1468,7 @@ function mostraComandoAfferente(sigla, nome){
   const latoVerso = (b, meta) =>
     distAng(b + 90, meta) <= distAng(b - 90, meta) ? 1 : -1;
 
-  function decora(layer){
+    function decora(layer){
     /* Motivi e guaina in un gruppo proprio, come l'asta di pendenza e vento:
        `decori.removeLayer(layer._deco)` non porta via i marcatori che
        PolylineDecorator ha creato, e ridecorando — al cambio di lato, di
@@ -1492,7 +1492,7 @@ function mostraComandoAfferente(sigla, nome){
           lineCap: def.lineCap || 'round',
           dashArray: (def.stati && !def.vuota && layer._stato === 'previsto')
             ? '9,7' : (def.dashArray || null)},
-          def.guaina)).addTo(decori);
+          def.guaina)).addTo(layer._gruppoDeco);
       layer._guaina.bringToBack();
     }
     const patterns = [];
@@ -1502,11 +1502,6 @@ function mostraComandoAfferente(sigla, nome){
        simbolo diventava un grumo. */
     [].concat(def.deco || []).forEach(dc => {
       let lt = layer._lato, gi = 0;
-      /* `nord` decide il lato da sé invece di chiederlo: non è una scelta
-         operativa come il fianco d'attacco, è solo dove sta più comodo il
-         bollo. L'azimut è quello fra primo e ultimo vertice — su un
-         tracciato molto curvo la controrotazione della lettera è esatta
-         solo in media, ma una bonifica si traccia quasi sempre dritta. */
       /* `verso` decide il lato da sé invece di chiederlo, a differenza del
          fianco d'attacco che è un dato operativo. L'azimut è quello fra
          primo e ultimo vertice: su un tracciato molto curvo la scelta è
@@ -1518,7 +1513,6 @@ function mostraComandoAfferente(sigla, nome){
         gi = -b;
       }
       const m = motivo(def, dc, layer._stato, lt, gi);
-      console.log('decora', dc.tipo, 'lato', lt);
       if (m) patterns.push(m);
     });
     /* Il badge sta ai DUE capi. In una sola posizione lo si trovava solo
@@ -1534,11 +1528,12 @@ function mostraComandoAfferente(sigla, nome){
     }
     if (!patterns.length) return;
     layer._deco = L.polylineDecorator(layer, {patterns});
-    decori.addLayer(layer._deco);
+    layer._gruppoDeco.addLayer(layer._deco);
   }
 
   function scollega(layer){
     if (!layer) return;
+    if (layer._gruppoDeco){ decori.removeLayer(layer._gruppoDeco); layer._gruppoDeco = null; }
     if (layer._deco){ decori.removeLayer(layer._deco); layer._deco = null; }
     if (layer._guaina){ decori.removeLayer(layer._guaina); layer._guaina = null; }
     if (layer._maniglia){ decori.removeLayer(layer._maniglia); layer._maniglia = null; }
