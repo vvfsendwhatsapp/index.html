@@ -649,7 +649,7 @@ function decoGlifo(tipo, opz){
       const cy = h / 2, cx = w / 2;
       const xb = cx + lato * semiFascia;    // base, sul bordo della fascia
       const xp = xb + lato * alt;           // vertice, fuori
-      const y1 = cy - 1 - b/2, y2 = cy + b/2;
+      const y1 = cy-b /*- b/2*/, y2 = cy/* + b/2*/;
       d = `<path d="M${f(xp)} ${f(cy)}L${f(xb)} ${f(y1)}L${f(xb)} ${f(y2)}Z"`
         + ` fill="#ffffff" stroke="none"/>`
         + `<path d="M${f(xb)} ${f(y1)}L${f(xp)} ${f(cy)}L${f(xb)} ${f(y2)}"`
