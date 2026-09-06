@@ -771,17 +771,17 @@ function decoGlifo(tipo, opz){
        la punta a parte, il vuoto avrebbe lasciato l'asta piena — mezza
        freccia prevista e mezza fatta. `dim` è la lunghezza del braccio. */
     case 'ortogonale': {
-      const sw = dim * 0.15, hw = dim * 0.34, hl = dim * 0.42;
-      w = Math.ceil(dim * 2 + hw) + 6;
-      h = Math.ceil(hw * 2) + 6;
-      const cx = w / 2, cy = h / 2;
-      const tip = cx + lato * dim;
-      const base = tip - lato * hl;
-      d = `<path d="M${f(cx)} ${f(cy - sw)}L${f(base)} ${f(cy - sw)}`
-        + `L${f(base)} ${f(cy - hw)}L${f(tip)} ${f(cy)}L${f(base)} ${f(cy + hw)}`
-        + `L${f(base)} ${f(cy + sw)}L${f(cx)} ${f(cy + sw)}Z"`
+      /* Il contorno della punta segue quello della linea che la porta: il
+         bordo rosso è la differenza fra guaina e fascia, mezza per parte, e
+         una punta con un filo da 1,2 su una fascia da 16 sembra disegnata
+         da un'altra mano. `bordoW` lo passa la riga della tavola, che è
+         l'unico posto dove si conoscono i due calibri. */
+      const sw = o.bordoW || (pieno ? 1.2 : 2.2);
+      d = `<path d="M${f(cx - bT/2)} ${f(by)}L${f(cx)} ${f(ay)}`
+        + `L${f(cx + bT/2)} ${f(by)}${chiudi}"`
         + ` fill="${pieno ? col : '#fff'}" stroke="${col}"`
-        + ` stroke-width="2" stroke-linejoin="round"/>`;
+        + ` stroke-width="${f(sw)}" stroke-linejoin="round"`
+        + ` stroke-linecap="butt"/>`;
       break;
     }
 
@@ -1010,10 +1010,11 @@ aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','
    `stati:1` a fare lo scambio, senza toccare il tratto della linea: su una
    fascia spessa il tratteggio diventa una fila di quadrotti. */
 aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
-  {color:'#ffffff', weight:5, lineCap:'butt', className:'sitac-ombra'},
+  {color:'#ffffff', weight:16, lineCap:'butt', className:'sitac-ombra'},
   {stati:1, lato:1, punti2:1, vuota:1, bordo:C.rosso,
-   guaina:{weight:9, lineCap:'butt', className:'sitac-ombra'},
-   deco:{tipo:'punta', dim:24, passo:0, offset:'100%', incl:90, pieno:1, fuori:9}});
+   guaina:{weight:22, lineCap:'butt', className:'sitac-ombra'},
+   deco:{tipo:'punta', dim:40, passo:0, offset:'100%', incl:90,
+         pieno:1, fuori:-4, bordoW:3}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
