@@ -528,6 +528,23 @@ agg('accensione_punti','azioni','sgControfuoco','Accensione per punti','Ignition
    <line x1="32" y1="39" x2="32" y2="50" stroke="${C.rosso}" stroke-width="2.8"/>
    <path d="M25 48l7 12 7-12Z" fill="${C.rosso}"/>`), {s:1});
 
+
+agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', {r:1, r0:0, senzaDisco:1});
+
+/*agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', o => T(
+  `<circle cx="32" cy="23" r="16" fill="${attivo(o) ? C.rosso : '#fff'}" stroke="${C.rosso}" stroke-width="2.8"/>
+   <line x1="32" y1="39" x2="32" y2="50" stroke="${C.rosso}" stroke-width="2.8"/>
+   <path d="M25 48l7 12 7-12Z" fill="${C.rosso}"/>`), {s:1});
+
+   /*
+
+agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', {r:1, r0:0, senzaDisco:1});
+  
+   agg('vento_forte','evoluzione',null,'Direzione del vento, intensit\u00e0 forte','Wind direction, strong',
+  direzione('45', 3), {r:1, r0:0, senzaDisco:1});
+   
+   */
+
 agg('area_evacuare','azioni','sgEvacuazione','Area da evacuare','Area to evacuate', tondoSigla('Ev', C.verde), {s:1});
 agg('zona_sicura','azioni','sgEvacuazione','Zona Sicura','Safety zone', tondoSigla('SZ', C.verde), {s:1});
 
@@ -1006,11 +1023,11 @@ aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','
    crea la linea d'appoggio, poi si accende. Nella tavola stanno nello
    stesso riquadro, e separarle costringeva a cercarle in due punti della
    barra mentre si sta facendo una cosa sola. */
-aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
-  {color:'#ffffff', weight:7, lineCap:'butt', lineJoin:'miter'},
+/*aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
+  {color:'#ffffff', weight:8, lineCap:'butt', lineJoin:'miter'},
   {stati:1, lato:1, vuota:1, bordo:C.rosso,
-   guaina:{weight:13, closePath: true/*lineCap:'round'*/, lineJoin:'miter'},
-   deco:{tipo:'puntaVuota', dim:26, passo:0}});
+   guaina:{weight:14, closePath: true, lineCap:'round', lineJoin:'miter'},
+   deco:{tipo:'puntaVuota', dim:26, passo:0}});*/  
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
