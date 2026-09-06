@@ -527,24 +527,6 @@ agg('accensione_punti','azioni','sgControfuoco','Accensione per punti','Ignition
   `<circle cx="32" cy="23" r="16" fill="${attivo(o) ? C.rosso : '#fff'}" stroke="${C.rosso}" stroke-width="2.8"/>
    <line x1="32" y1="39" x2="32" y2="50" stroke="${C.rosso}" stroke-width="2.8"/>
    <path d="M25 48l7 12 7-12Z" fill="${C.rosso}"/>`), {s:1});
-
-
-//agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', {r:1, r0:0, senzaDisco:1});
-
-/*agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', o => T(
-  `<circle cx="32" cy="23" r="16" fill="${attivo(o) ? C.rosso : '#fff'}" stroke="${C.rosso}" stroke-width="2.8"/>
-   <line x1="32" y1="39" x2="32" y2="50" stroke="${C.rosso}" stroke-width="2.8"/>
-   <path d="M25 48l7 12 7-12Z" fill="${C.rosso}"/>`), {s:1});
-
-   /*
-
-agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', {r:1, r0:0, senzaDisco:1});
-  
-   agg('vento_forte','evoluzione',null,'Direzione del vento, intensit\u00e0 forte','Wind direction, strong',
-  direzione('45', 3), {r:1, r0:0, senzaDisco:1});
-   
-   */
-
 agg('area_evacuare','azioni','sgEvacuazione','Area da evacuare','Area to evacuate', tondoSigla('Ev', C.verde), {s:1});
 agg('zona_sicura','azioni','sgEvacuazione','Zona Sicura','Safety zone', tondoSigla('SZ', C.verde), {s:1});
 
@@ -666,43 +648,30 @@ function decoGlifo(tipo, opz){
        disegnata a mano.
        Il baricentro di un triangolo sta a un terzo dell'altezza dalla base:
        apice a 2/3 davanti, base a 1/3 dietro. `dim` è la base. */
-    case 'freccia':          // ripetuta lungo la linea (senso di marcia)
-    case 'punta': {          // una sola, sull'ultimo vertice
-      const hT = dim * 1.15, bT = dim;
-      /* `incl` ruota la punta rispetto al verso di percorrenza: 0 è avanti
-         (assi di sviluppo, bonifica), 90 di traverso — l'accensione per
-         linee, dove la freccia dice da che parte si manda il fuoco e non
-         dove finisce la linea d'appoggio. `lato` sceglie quale fianco. */
-      const gr = (o.incl || 0) * lato;
-      /* `fuori` sposta il glifo di traverso al tracciato, quel tanto che
-         porta la BASE sul bordo della linea invece che sul suo asse: senza,
-         la punta sta a cavallo del tratto e la base sparisce dentro. Lo
-         passa la riga della tavola, che è l'unico posto dove si sa quanto
-         è spessa la linea che porta il motivo. */
-      const sp = (o.fuori || 0) * lato;
-      /* Il riquadro va misurato SULLA figura ruotata e spostata: con
-         l'ingombro della figura dritta il vertice usciva dal bordo
-         dell'icona e veniva tagliato via. Stesso conto del `case 'pilone'`,
-         per la stessa ragione. */
-      const a = Math.abs(gr) * Math.PI / 180;
-      w = Math.ceil(bT * Math.cos(a) + hT * Math.sin(a)
-                    + Math.abs(o.fuori || 0) * 2 + bw * 4) + 6;
-      h = Math.ceil(hT * Math.cos(a) + bT * Math.sin(a) + bw * 4) + 6;
-      const cx = w / 2, cy = h / 2;
-      const ay = cy - hT * 2 / 3, by = cy + hT / 3;
-      const chiudi = o.aperta ? '' : 'Z';
-      d = `<path d="M${f(cx - bT/2)} ${f(by)}L${f(cx)} ${f(ay)}`
-        + `L${f(cx + bT/2)} ${f(by)}${chiudi}"`
-        + ` fill="${pieno ? col : '#fff'}" stroke="${col}"`
-        + ` stroke-width="${pieno ? 1.2 : 2.2}" stroke-linejoin="round"`
-        + ` stroke-linecap="butt"/>`;
-      if (gr) d = `<g transform="rotate(${f(gr)} ${f(cx)} ${f(cy)})">${d}</g>`;
-      /* Lo spostamento di traverso NON si fa qui: traslando il disegno
-         uscirebbe dal viewBox e verrebbe tagliato. Si dichiara e lo applica
-         `motivo()` spostando l'ANCORA dell'icona, che è il punto del glifo
-         che va a cadere sul tracciato. */
-      break;
-    }
+case 'freccia':
+case 'punta': {
+  const hT = dim * 1.15, bT = dim;
+  const gr = (o.incl || 0) * lato;
+  const bw = o.bordoW || 0;
+  const a  = Math.abs(gr) * Math.PI / 180;
+  w = Math.ceil(bT * Math.cos(a) + hT * Math.sin(a)
+                + Math.abs(o.fuori || 0) * 2 + bw * 4) + 6;
+  h = Math.ceil(hT * Math.cos(a) + bT * Math.sin(a) + bw * 4) + 6;
+  const cx = w / 2, cy = h / 2;
+  const ay = cy - hT * 2 / 3, by = cy + hT / 3;
+  const chiudi = o.aperta ? '' : 'Z';
+  const via = `M${f(cx - bT/2)} ${f(by)}L${f(cx)} ${f(ay)}`
+            + `L${f(cx + bT/2)} ${f(by)}${chiudi}`;
+  d = (bw
+      ? `<path d="${via}" fill="none" stroke="${col}"`
+        + ` stroke-width="${f(bw * 2)}" stroke-linejoin="round"/>`
+      : '')
+    + `<path d="${via}" fill="${pieno ? col : '#fff'}" stroke="${col}"`
+    + ` stroke-width="${f(bw || (pieno ? 1.2 : 2.2))}"`
+    + ` stroke-linejoin="round" stroke-linecap="butt"/>`;
+  if (gr) d = `<g transform="rotate(${f(gr)} ${f(cx)} ${f(cy)})">${d}</g>`;
+  break;
+}
 
     /* Pendenze e vento — le CODINE dell'intensità, una due o tre: a T per la
        pendenza, a 45° per il vento.
@@ -755,38 +724,6 @@ function decoGlifo(tipo, opz){
         + ` fill="#fff" stroke="${col}" stroke-width="2.4"${tr}/>`
         + txt(bx, cy + s * 0.28, o.testo || '', col, s * 0.72, 'middle',
             giro ? `rotate(${f(giro)} ${f(bx)} ${f(cy)})` : '');
-      break;
-    }
-
-    /* Accensione per linee — alla fine del tracciato il braccio gira di 90°
-       verso il lato scelto e ci mette una punta: è quello il verso in cui si
-       manda il fuoco, e non è mai quello della linea, che è la linea di
-       appoggio. `dim` è la lunghezza del braccio. */
-    /* Accensione per linee — alla fine del tracciato il braccio gira di 90°
-       verso il lato scelto: è quello il verso in cui si manda il fuoco, e
-       non è mai quello della linea, che è la linea di appoggio.
-       È UNA sagoma chiusa, asta e punta insieme, non una linea più un
-       triangolo: solo così la freccia prevista può essere vuota col
-       contorno, come gli assi di sviluppo. Con l'asta disegnata a tratto e
-       la punta a parte, il vuoto avrebbe lasciato l'asta piena — mezza
-       freccia prevista e mezza fatta. `dim` è la lunghezza del braccio. */
-    case 'ortogonale': {
-      /* Il bordo si disegna come una seconda copia del triangolo, sotto,
-         con lo stroke più largo: è la stessa costruzione della guaina sulla
-         linea, e per la stessa ragione. Un solo `stroke` sta a cavallo del
-         contorno — metà dentro e metà fuori — quindi a parità di numero
-         sporge la metà di quanto sporge la guaina, e la punta sembra
-         disegnata con una penna più sottile. */
-      const via = `M${f(cx - bT/2)} ${f(by)}L${f(cx)} ${f(ay)}`
-        + `L${f(cx + bT/2)} ${f(by)}${chiudi}`;
-      const bw = o.bordoW || 0;
-      d = (bw
-        ? `<path d="${via}" fill="none" stroke="${col}"`
-          + ` stroke-width="${f(bw * 2)}" stroke-linejoin="round"/>`
-        : '')
-        + `<path d="${via}" fill="${pieno ? col : '#fff'}" stroke="${col}"`
-        + ` stroke-width="${f(bw || (pieno ? 1.2 : 2.2))}"`
-        + ` stroke-linejoin="round" stroke-linecap="butt"/>`;
       break;
     }
 
