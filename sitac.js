@@ -1518,6 +1518,12 @@ function mostraComandoAfferente(sigla, nome){
     /* Il badge sta ai DUE capi. In una sola posizione lo si trovava solo
        imboccando la strada dal lato giusto, e da che mezzi è percorribile è
        la prima cosa che si guarda arrivando — da qualunque parte si arrivi. */
+    /* Il decoratore si crea da zero ogni volta e il vecchio si stacca
+       esplicitamente: PolylineDecorator riusa i marcatori già in carta
+       quando lo si ricostruisce sullo stesso layer, quindi il glifo nuovo —
+       col lato cambiato — non arriva mai a schermo. `clearLayers` sul
+       gruppo non basta: i marcatori restano appesi all'istanza. */
+
     if (def.badge){
       const bollo = () => L.Symbol.marker({rotate:false,
         markerOptions:{interactive:false, icon: L.divIcon({
@@ -1527,11 +1533,11 @@ function mostraComandoAfferente(sigla, nome){
       patterns.push({offset:'100%', repeat:0, symbol: bollo()});
     }
     if (!patterns.length) return;
-    /* Il decoratore si crea da zero ogni volta e il vecchio si stacca
-       esplicitamente: PolylineDecorator riusa i marcatori già in carta
-       quando lo si ricostruisce sullo stesso layer, quindi il glifo nuovo —
-       col lato cambiato — non arriva mai a schermo. `clearLayers` sul
-       gruppo non basta: i marcatori restano appesi all'istanza. */
+    /* Il vecchio decoratore si stacca ESPLICITAMENTE prima di crearne uno
+       nuovo: PolylineDecorator riusa i marcatori già in carta quando lo si
+       ricostruisce sullo stesso layer, e il glifo col lato cambiato non
+       arriva mai a schermo. `clearLayers` sul gruppo non basta — i
+       marcatori restano appesi all'istanza vecchia. */
     if (layer._deco && layer._deco.remove) layer._deco.remove();
     layer._deco = L.polylineDecorator(layer, {patterns});
     layer._gruppoDeco.addLayer(layer._deco);
