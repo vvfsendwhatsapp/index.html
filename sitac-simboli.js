@@ -634,7 +634,7 @@ function decoGlifo(tipo, opz){
        larghezza sembrerebbe la linea che finisce, non una freccia.
        `dim` è la base. */
     case 'puntaVuota': {
-      const b = dim, alt = dim * 0.85;
+      const b = dim, alt = dim /* * 0.85*/;
       /* Il triangolo esce di TRAVERSO al tracciato: sulla tavola dice da che
          parte si accende, non dove finisce la fascia.
          La tela è larga il doppio dell'altezza della punta perché il glifo
