@@ -3190,7 +3190,7 @@ Koordináták küldéséhez:
     (function mostraVersione(){
         const v = window.FIREOPS_VERSIONE;
         const leggibile = v
-            ? String(v).replace(/^(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)$/, "$3/$2/$1 $4:$5")
+            ? String(v).replace(/^(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)$/, "$3$2$1$4$5")
             : "n/d";
         const testata = document.getElementById("display-versione");
         if (testata){
