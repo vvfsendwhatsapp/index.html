@@ -1427,6 +1427,7 @@ function mostraComandoAfferente(sigla, nome){
        volte in tutto. */
     const anteprima = e => {
       const l = latoDi(layer, e.latlng);
+      console.log('mousemove lato', l, 'era', layer._lato);
       if (l === layer._lato) return;
       layer._lato = l;
       decora(layer);
