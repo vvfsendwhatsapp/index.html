@@ -943,21 +943,22 @@ aggL('bonifica','azioni','sgTerra','Bonifica','Mop up',
 aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','Creation of a safety line',
   {color:C.rosso, weight:3}, {stati:1, deco:{tipo:'bifronte', passo:'auto', dim:12, pieno:1}});
 /* Accensione e linea di sicurezza sono lo stesso gesto in due tempi: si
-   crea la linea d'appoggio, poi si accende. Nella tavola stanno nello
-   stesso riquadro, e separarle costringeva a cercarle in due punti della
-   barra mentre si sta facendo una cosa sola. */
-/* Come pendenza e vento: il tracciato È il simbolo, e la punta esce di
-   traverso dalla parte che si sceglie col clic del lato. Niente codine —
-   quelle dicono l'intensità, che qui non esiste.
-   Prevista: triangolo vuoto col bordo rosso. Effettuata: pieno rosso. È
-   `stati:1` a fare lo scambio, senza toccare il tratto della linea: su una
-   fascia spessa il tratteggio diventa una fila di quadrotti. */
+   prepara la linea d'appoggio, poi si accende. Nella tavola stanno nello
+   stesso riquadro.
+   Il tracciato è una fascia bianca bordata di rosso — bianca quando è
+   prevista, rossa piena quando è fatta — con la punta di traverso dalla
+   parte che si sceglie col terzo clic: è quello il verso in cui si manda
+   il fuoco, e non è mai quello della linea, che è la linea d'appoggio.
+   I cinque numeri sono tarati a vista uno sull'altro e vanno insieme:
+   `guaina` meno `weight` dà il bordo della fascia, `bordoW` è quello della
+   punta e deve pareggiarlo, `fuori` porta la base sul bordo. Cambiandone
+   uno vanno rivisti gli altri. */
 aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
-  {color:'#ffffff', weight:16, lineCap:'butt', className:'sitac-ombra'},
+  {color:'#ffffff', weight:16, lineCap:'butt'},
   {stati:1, lato:1, punti2:1, vuota:1, bordo:C.rosso,
-   guaina:{weight:22, lineCap:'butt', className:'sitac-ombra'},
+   guaina:{weight:22, lineCap:'butt'},
    deco:{tipo:'punta', dim:40, passo:0, offset:'100%', incl:90,
-         pieno:1, fuori:-4, bordoW:6}});
+         pieno:1, fuori:-7, bordoW:3.5}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
