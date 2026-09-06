@@ -1511,6 +1511,7 @@ function mostraComandoAfferente(sigla, nome){
         gi = -b;
       }
       const m = motivo(def, dc, layer._stato, lt, gi);
+      console.log('decora', dc.tipo, 'lato', lt);
       if (m) patterns.push(m);
     });
     /* Il badge sta ai DUE capi. In una sola posizione lo si trovava solo
