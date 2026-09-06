@@ -566,6 +566,7 @@ function decoGlifo(tipo, opz){
      clic — un attacco sui fianchi che punta dalla parte sbagliata manda le
      squadre nel fuoco invece che addosso al fianco. */
   const lato = o.lato === -1 ? -1 : 1;
+  if (tipo === 'freccia45') console.log('glifo freccia45', 'o.lato', o.lato, '→', lato);
   const f = x => (+x).toFixed(1);
   let w, h, d = '';
 
@@ -639,15 +640,16 @@ function decoGlifo(tipo, opz){
       break;
     }
 
-    /* Punta di freccia — il triangolo sta sul tracciato con il BARICENTRO nel
-       punto, non con l'apice. Ancorandolo per l'apice il tratto arrivava fino
-       alla punta e sporgeva oltre, perché il linecap e lo spessore della linea
-       aggiungono qualche pixel dopo l'ultimo vertice: si vedeva una codina
-       fuori dal triangolo. Col baricentro il vertice finale cade DENTRO la
-       figura, che lo copre, e la freccia sporge in avanti come su una carta
-       disegnata a mano.
-       Il baricentro di un triangolo sta a un terzo dell'altezza dalla base:
-       apice a 2/3 davanti, base a 1/3 dietro. `dim` è la base. */
+  /* Punta di freccia — il triangolo sta sul tracciato con il BARICENTRO nel
+    punto, non con l'apice. Ancorandolo per l'apice il tratto arrivava fino
+    alla punta e sporgeva oltre, perché il linecap e lo spessore della linea
+    aggiungono qualche pixel dopo l'ultimo vertice: si vedeva una codina
+    fuori dal triangolo. Col baricentro il vertice finale cade DENTRO la
+    figura, che lo copre, e la freccia sporge in avanti come su una carta
+    disegnata a mano.
+    Il baricentro di un triangolo sta a un terzo dell'altezza dalla base:
+    apice a 2/3 davanti, base a 1/3 dietro. `dim` è la base. */
+
 case 'freccia':
 case 'punta': {
   const hT = dim * 1.15, bT = dim;
