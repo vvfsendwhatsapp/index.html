@@ -635,19 +635,24 @@ function decoGlifo(tipo, opz){
        `dim` è la base. */
     case 'puntaVuota': {
       const b = dim, alt = dim * 0.85;
-      /* Il triangolo esce di TRAVERSO al tracciato, non nel verso di
-         percorrenza: sulla tavola dice da che parte si accende, non dove
-         finisce la fascia. Gli assi si scambiano — la base sta lungo la
-         linea, la punta sporge lateralmente — e `lato` decide da che parte.
-         `w` e `h` seguono lo scambio: il glifo è largo quanto l'altezza
-         della punta e alto quanto la sua base. */
-      w = alt * 2 + 6; h = b + 6;
+      /* Il triangolo esce di TRAVERSO al tracciato: sulla tavola dice da che
+         parte si accende, non dove finisce la fascia.
+         La tela è larga il doppio dell'altezza della punta perché il glifo
+         resta ancorato al centro — è la convenzione del decoratore — e la
+         punta va disegnata tutta da una parte, con la BASE sul margine della
+         fascia invece che sul suo asse. Metà punta dentro la fascia bianca
+         era quello che si vedeva prima: la base spariva e il triangolo
+         sembrava sbucare dal mezzo. */
+      const semiFascia = 6.5;              // metà della guaina (13px)
+      w = (alt + semiFascia) * 2 + 6;
+      h = b + 6;
       const cy = h / 2, cx = w / 2;
-      const xp = cx + lato * alt;          // vertice, di traverso
-      const y1 = cy - b/2, y2 = cy + b/2;  // base, lungo la linea
-      d = `<path d="M${f(xp)} ${f(cy)}L${f(cx)} ${f(y1)}L${f(cx)} ${f(y2)}Z"`
+      const xb = cx + lato * semiFascia;    // base, sul bordo della fascia
+      const xp = xb + lato * alt;           // vertice, fuori
+      const y1 = cy - b/2, y2 = cy + b/2;
+      d = `<path d="M${f(xp)} ${f(cy)}L${f(xb)} ${f(y1)}L${f(xb)} ${f(y2)}Z"`
         + ` fill="#ffffff" stroke="none"/>`
-        + `<path d="M${f(cx)} ${f(y1)}L${f(xp)} ${f(cy)}L${f(cx)} ${f(y2)}"`
+        + `<path d="M${f(xb)} ${f(y1)}L${f(xp)} ${f(cy)}L${f(xb)} ${f(y2)}"`
         + ` fill="none" stroke="${col}" stroke-width="2.8"`
         + ` stroke-linejoin="miter" stroke-linecap="butt"/>`;
       break;

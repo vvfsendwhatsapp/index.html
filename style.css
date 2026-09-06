@@ -5926,6 +5926,17 @@ select:focus {
 
 #sitac-app .sitac-avviso-lato[hidden] { display: none; }
 
+/* Terza riga della testata, sotto il sottotitolo: più piccola e più spenta,
+   perché è un dato di servizio e non deve competere col nome dell'app.
+   Il numero grezzo sta nel `title`: è quello che si detta al telefono. */
+.site-titles .site-versione {
+    font-size: 10px;
+    color: var(--text-muted);
+    opacity: .7;
+    white-space: nowrap;
+    font-family: "Courier New", monospace;
+}
+
 /* ==========================================================
    ==========================================================
    RESPONSIVE
@@ -6136,3 +6147,4 @@ select:focus {
         transition: none !important;
     }
 }
+
