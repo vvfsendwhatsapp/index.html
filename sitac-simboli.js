@@ -654,9 +654,10 @@ case 'punta': {
   const gr = (o.incl || 0) * lato;
   const bw = o.bordoW || 0;
   const a  = Math.abs(gr) * Math.PI / 180;
-  w = Math.ceil(bT * Math.cos(a) + hT * Math.sin(a)
-                + Math.abs(o.fuori || 0) * 2 + bw * 4) + 6;
-  h = Math.ceil(hT * Math.cos(a) + bT * Math.sin(a) + bw * 4) + 6;
+  const pari = x => { const v = Math.ceil(x); return v % 2 ? v + 1 : v; };
+      w = pari(bT * Math.cos(a) + hT * Math.sin(a)
+               + Math.abs(o.fuori || 0) * 2 + bw * 4 + 6);
+      h = pari(hT * Math.cos(a) + bT * Math.sin(a) + bw * 4 + 6);
   const cx = w / 2, cy = h / 2;
   const ay = cy - hT * 2 / 3, by = cy + hT / 3;
   const chiudi = o.aperta ? '' : 'Z';
