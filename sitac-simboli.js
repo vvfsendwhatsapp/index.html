@@ -625,6 +625,33 @@ function decoGlifo(tipo, opz){
       break;
     }
 
+    /* Accensione per linee — la punta in coda al tracciato, disegnata con
+       la stessa grammatica della fascia che la precede: interno bianco,
+       bordo rosso, spigoli vivi. Non è `punta` con `pieno:0`, perché lì il
+       vuoto è trasparente: qui il bianco è parte del segno, non l'assenza
+       di colore.
+       Base più larga della fascia (13px di guaina): una punta della stessa
+       larghezza sembrerebbe la linea che finisce, non una freccia.
+       `dim` è la base. */
+    case 'puntaVuota': {
+      const b = dim, alt = dim * 0.85;
+      w = b + 6; h = alt + 6;
+      const cx = w / 2;
+      /* Due elementi, non uno. Il triangolo pieno di bianco serve a coprire
+         la carta sotto; il bordo è una spezzata APERTA — lato destro, punta,
+         lato sinistro — che salta la base. Un `<path>` chiuso disegnerebbe
+         anche quella, e sulla foto della tavola lì non c'è: la base è dove
+         la fascia continua, e una riga rossa di traverso la spezzerebbe in
+         due segni invece di uno. */
+      const x1 = cx - b/2, x2 = cx + b/2, y = h - 3;
+      d = `<path d="M${f(cx)} 3L${f(x2)} ${f(y)}L${f(x1)} ${f(y)}Z"`
+        + ` fill="#ffffff" stroke="none"/>`
+        + `<path d="M${f(x1)} ${f(y)}L${f(cx)} 3L${f(x2)} ${f(y)}"`
+        + ` fill="none" stroke="${col}" stroke-width="2.8"`
+        + ` stroke-linejoin="miter" stroke-linecap="butt"/>`;
+      break;
+    }
+
     /* Fronte dell'incendio — doppia linea parallela unita da lineette. Il
        tracciato vero è una delle due; il motivo disegna l'altra, affiancata,
        e le traversine che le legano. Passo corto: le lineette devono essere
@@ -977,10 +1004,11 @@ aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','
    riempimento: bianca col bordo rosso quando è prevista, rossa piena quando
    è fatta. Il tratteggio qui non si poteva usare — su una linea spessa nove
    pixel diventa una fila di quadrotti, ed è quello che si vedeva. */
-aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Ignition by lines',
-  {color:C.rosso, weight:9, lineCap:'butt'},
-  {stati:1, lato:1, vuota:1, bordo:C.rosso, guaina:{weight:13},
-   deco:{tipo:'ortogonale', dim:30, passo:0, offset:'100%', pieno:1}});
+aggL('accensione_linee','azioni','sgTerra','Accensione per linee','Line firing',
+  {color:'#ffffff', weight:7, lineCap:'butt', lineJoin:'miter'},
+  {stati:1, lato:1, vuota:1, bordo:C.rosso,
+   guaina:{weight:13, lineCap:'butt', lineJoin:'miter'},
+   deco:{tipo:'puntaVuota', dim:26, passo:0, offset:'100%'}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 

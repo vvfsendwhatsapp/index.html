@@ -8,10 +8,6 @@
       nel campo note, fai che si possono inserire note nel tempo col tasto + e le aggiungein un breve riepilogo come cono di propagazione
 * accensione per linee dobbiamo curare di piu sia il logo a sinistra che la freccia in se per se e manca alert scelta lato in alto a sinistra vicino al nord e vento.
 * attacco sui fianchi va bene ma voglio vedere che si sposta quando sposto il mouse e manca alert scelta lato in alto a sinistra vicino al nord e vento
-* direzione del vento va bene ma togli la direttrice azzurra ed il pallino. fai la freccia piu lunga.
- tutta l'asta vento e pendenza deve essere selezionabile e sul popup tasto destro ci deve anche essere cambia intensità come vento dos
- idem la pendenza!
-* stessa cosa per pendenza, solo che il secondo clic determina anche la lunghezza della freccia
 * sistemare icone asse primario e secondario.
 * sistemare frecce primario e secondario con chiusure giuste
 * mi spieghi importgeojson con campi diversi per campi coordinate?
