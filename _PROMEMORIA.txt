@@ -15,3 +15,4 @@
 * difesa in lina, attqacco sui fianchi serve anteprima per scelta lato
 * bonifica la B va verticale rispetto alla pagina
 * espansione menu sempre al top colonna
+* frecce 45 attacco fianco vanno spostate e non messe in mezzo

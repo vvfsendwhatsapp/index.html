@@ -1527,6 +1527,12 @@ function mostraComandoAfferente(sigla, nome){
       patterns.push({offset:'100%', repeat:0, symbol: bollo()});
     }
     if (!patterns.length) return;
+    /* Il decoratore si crea da zero ogni volta e il vecchio si stacca
+       esplicitamente: PolylineDecorator riusa i marcatori già in carta
+       quando lo si ricostruisce sullo stesso layer, quindi il glifo nuovo —
+       col lato cambiato — non arriva mai a schermo. `clearLayers` sul
+       gruppo non basta: i marcatori restano appesi all'istanza. */
+    if (layer._deco && layer._deco.remove) layer._deco.remove();
     layer._deco = L.polylineDecorator(layer, {patterns});
     layer._gruppoDeco.addLayer(layer._deco);
   }
