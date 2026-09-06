@@ -2632,10 +2632,6 @@ function mostraComandoAfferente(sigla, nome){
       if (/^(pend_|vento_)/.test(l._tipo || ''))
         voci.push({et: t('menuVentoInt'), fai: () => cambiaIntensita(l)});
       voci.push({et: t('menuSposta'), fai: () => spostaElemento(l)});
-      /* Solo pendenza e vento: sugli altri orientabili — TP, lanci —
-         l'intensità non esiste come concetto. */
-      if (/^(pend_|vento_)/.test(l._tipo || ''))
-        voci.push({et: t('menuVentoInt'), fai: () => cambiaIntensita(l)});
     } else {
       voci.push({et: t('menuVertici'), fai: () => modificaVertici(l)});
       voci.push({et: t('menuSposta'),  fai: () => spostaElemento(l)});
