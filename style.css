@@ -5943,7 +5943,7 @@ select:focus {
    bisogno — un'ombra su tutto costerebbe un passaggio di composizione per
    ogni tracciato senza aggiungere niente. */
 #sitac-app .sitac-ombra {
-    filter: drop-shadow(0 0 3px rgba(0,0,0,0));
+    filter: drop-shadow(0 0 3px rgb(255, 0, 0));
 }
 
 /* ==========================================================
