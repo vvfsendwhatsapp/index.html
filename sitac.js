@@ -1469,8 +1469,15 @@ function mostraComandoAfferente(sigla, nome){
     distAng(b + 90, meta) <= distAng(b - 90, meta) ? 1 : -1;
 
   function decora(layer){
-    if (layer._deco){ decori.removeLayer(layer._deco); layer._deco = null; }
-    if (layer._guaina){ decori.removeLayer(layer._guaina); layer._guaina = null; }
+    /* Motivi e guaina in un gruppo proprio, come l'asta di pendenza e vento:
+       `decori.removeLayer(layer._deco)` non porta via i marcatori che
+       PolylineDecorator ha creato, e ridecorando — al cambio di lato, di
+       stato, a ogni pm:edit — quelli vecchi restano a schermo sotto i nuovi.
+       Un gruppo si svuota tutto insieme e non lascia orfani. */
+    if (!layer._gruppoDeco) layer._gruppoDeco = L.layerGroup().addTo(decori);
+    layer._gruppoDeco.clearLayers();
+    layer._deco = null;
+    layer._guaina = null;
     const def = LIN[layer._tipo];
     if (!def) return;
     /* La guaina è la seconda linea sotto, più larga, che fa da contorno: è
