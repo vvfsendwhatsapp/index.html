@@ -6,9 +6,8 @@
       foto 7 accensione sui fianchi va migliorata perchè è impresentabile così, inoltre va chiusa. anche il logo nella colonna sinistra.
       anche la scelta del lato ovunque, il popup va in alto a sinistra vicino al riquadro Nord e vento e senza i tasti di annulla e conferma
       nel campo note, fai che si possono inserire note nel tempo col tasto + e le aggiungein un breve riepilogo come cono di propagazione
-* accensione per linee dobbiamo curare di piu sia il logo a sinistra che la freccia in se per se e manca alert scelta lato in alto a sinistra vicino al nord e vento.
 * attacco sui fianchi va bene ma voglio vedere che si sposta quando sposto il mouse e manca alert scelta lato in alto a sinistra vicino al nord e vento
-* sistemare icone asse primario e secondario.
+* sistemare icone asse primario e secondario. come accensione linee con freccia dritta!
 * sistemare frecce primario e secondario con chiusure giuste
 * mi spieghi importgeojson con campi diversi per campi coordinate?
 * Inoltre direzione sulla mappa non funziona
