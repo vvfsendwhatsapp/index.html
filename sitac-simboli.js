@@ -529,7 +529,7 @@ agg('accensione_punti','azioni','sgControfuoco','Accensione per punti','Ignition
    <path d="M25 48l7 12 7-12Z" fill="${C.rosso}"/>`), {s:1});
 
 
-agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', {r:1, r0:0, senzaDisco:1});
+//agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', {r:1, r0:0, senzaDisco:1});
 
 /*agg('accensione_linee','azioni','sgControfuoco','Accensione per punti','Ignition by points', o => T(
   `<circle cx="32" cy="23" r="16" fill="${attivo(o) ? C.rosso : '#fff'}" stroke="${C.rosso}" stroke-width="2.8"/>
@@ -642,39 +642,6 @@ function decoGlifo(tipo, opz){
       break;
     }
 
-    /* Accensione per linee — la punta in coda al tracciato, disegnata con
-       la stessa grammatica della fascia che la precede: interno bianco,
-       bordo rosso, spigoli vivi. Non è `punta` con `pieno:0`, perché lì il
-       vuoto è trasparente: qui il bianco è parte del segno, non l'assenza
-       di colore.
-       Base più larga della fascia (13px di guaina): una punta della stessa
-       larghezza sembrerebbe la linea che finisce, non una freccia.
-       `dim` è la base. */
-    case 'puntaVuota': {
-      const b = dim, alt = dim * 0.5;
-      /* Il triangolo esce di TRAVERSO al tracciato: sulla tavola dice da che
-         parte si accende, non dove finisce la fascia.
-         La tela è larga il doppio dell'altezza della punta perché il glifo
-         resta ancorato al centro — è la convenzione del decoratore — e la
-         punta va disegnata tutta da una parte, con la BASE sul margine della
-         fascia invece che sul suo asse. Metà punta dentro la fascia bianca
-         era quello che si vedeva prima: la base spariva e il triangolo
-         sembrava sbucare dal mezzo. */
-      const semiFascia = 6.5;              // metà della guaina (13px)
-      w = (alt + semiFascia) * 2 + 6; 
-      h = b + 6;
-      const cy = h / 2, cx = w / 2;
-      const xb = cx + lato * semiFascia - 3;    // base, sul bordo della fascia
-      const xp = xb + lato * alt;           // vertice, fuori
-      const y1 = cy - b/2, y2 = cy + b/2;
-      d = `<path d="M${f(xp)} ${f(cy)}L${f(xb)} ${f(y1)}L${f(xb)} ${f(y2)}Z"`
-        + ` fill="#ffffff" stroke="none"/>`
-        + `<path d="M${f(xb)} ${f(y1)}L${f(xp)} ${f(cy)}L${f(xb)} ${f(y2)}"`
-        + ` fill="none" stroke="${col}" stroke-width="2.8"`
-        + ` stroke-linejoin="miter" stroke-linecap="butt"/>`;
-      break;
-    }
-
     /* Fronte dell'incendio — doppia linea parallela unita da lineette. Il
        tracciato vero è una delle due; il motivo disegna l'altra, affiancata,
        e le traversine che le legano. Passo corto: le lineette devono essere
@@ -706,21 +673,20 @@ function decoGlifo(tipo, opz){
       h = Math.ceil(hT) + 6;
       const cx = w / 2, cy = h / 2;
       const ay = cy - hT * 2 / 3, by = cy + hT / 3;
-      /* Vuota = campita di bianco, non a V aperta: il bianco è quello che
-         nasconde il tratto sotto, ed è il motivo per cui si è spostato il
-         baricentro. Una V aperta rimetterebbe la linea in vista. */
-      /* `aperta` toglie la BASE del triangolo: sugli assi secondari l'asta
-         è già bianca bordata di rosso, e una base disegnata di traverso
-         taglia la freccia in due invece di lasciarla sfociare nella punta.
-         Il tratto non chiude il percorso, il riempimento sì — quindi il
-         bianco copre lo stesso i bordi dell'asta che entrano nel
-         triangolo, e quei bordi finiscono esattamente sulla base. */
       const chiudi = o.aperta ? '' : 'Z';
       d = `<path d="M${f(cx - bT/2)} ${f(by)}L${f(cx)} ${f(ay)}`
         + `L${f(cx + bT/2)} ${f(by)}${chiudi}"`
         + ` fill="${pieno ? col : '#fff'}" stroke="${col}"`
         + ` stroke-width="${pieno ? 1.2 : 2.2}" stroke-linejoin="round"`
         + ` stroke-linecap="butt"/>`;
+      /* `incl` ruota la punta rispetto al verso di percorrenza: 0 è avanti
+         (assi di sviluppo, bonifica), 90 di traverso — l'accensione per
+         linee, dove la freccia dice da che parte si manda il fuoco e non
+         dove finisce la linea d'appoggio. `lato` sceglie quale fianco.
+         La rotazione è attorno al centro del glifo, che è il punto che sta
+         sul tracciato: la punta gira restando agganciata alla linea. */
+      const gr = (o.incl || 0) * lato;
+      if (gr) d = `<g transform="rotate(${f(gr)} ${f(cx)} ${f(cy)})">${d}</g>`;
       break;
     }
 
@@ -1023,11 +989,16 @@ aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','
    crea la linea d'appoggio, poi si accende. Nella tavola stanno nello
    stesso riquadro, e separarle costringeva a cercarle in due punti della
    barra mentre si sta facendo una cosa sola. */
-/*aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
-  {color:'#ffffff', weight:8, lineCap:'butt', lineJoin:'miter'},
-  {stati:1, lato:1, vuota:1, bordo:C.rosso,
-   guaina:{weight:14, closePath: true, lineCap:'round', lineJoin:'miter'},
-   deco:{tipo:'puntaVuota', dim:26, passo:0}});*/  
+/* Come pendenza e vento: il tracciato È il simbolo, e la punta esce di
+   traverso dalla parte che si sceglie col clic del lato. Niente codine —
+   quelle dicono l'intensità, che qui non esiste.
+   Prevista: triangolo vuoto col bordo rosso. Effettuata: pieno rosso. È
+   `stati:1` a fare lo scambio, senza toccare il tratto della linea: su una
+   fascia spessa il tratteggio diventa una fila di quadrotti. */
+aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
+  {color:C.rosso, weight:3},
+  {stati:1, lato:1,
+   deco:{tipo:'punta', dim:24, passo:'100%', incl:90, pieno:1}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
