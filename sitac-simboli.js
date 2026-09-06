@@ -998,7 +998,7 @@ aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','
 aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
   {color:C.rosso, weight:3},
   {stati:1, lato:1,
-   deco:{tipo:'punta', dim:24, passo:'100%', incl:90, pieno:1}});
+   deco:{tipo:'punta', dim:24, offset:'100%', incl:90, pieno:1}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
