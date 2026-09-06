@@ -1411,7 +1411,6 @@ function mostraComandoAfferente(sigla, nome){
      tracciato rispetto a cui stare da una parte. Annullando resta il lato
      predefinito, che è meglio di un tracciato senza frecce. */
   async function chiediLato(layer){
-    console.log('chiediLato', layer._tipo, LIN[layer._tipo] && LIN[layer._tipo].lato);
     const def = LIN[layer._tipo];
     if (!def || !def.lato) return;
     if (layer._lato == null) layer._lato = 1;
@@ -1427,7 +1426,6 @@ function mostraComandoAfferente(sigla, nome){
        volte in tutto. */
     const anteprima = e => {
       const l = latoDi(layer, e.latlng);
-      console.log('mousemove lato', l, 'era', layer._lato);
       if (l === layer._lato) return;
       layer._lato = l;
       decora(layer);
@@ -2630,7 +2628,7 @@ function mostraComandoAfferente(sigla, nome){
       /* Solo pendenza e vento: sugli altri orientabili — TP, lanci —
          l'intensità non esiste come concetto. */
       if (/^(pend_|vento_)/.test(l._tipo || ''))
-        voci.push({et: t('menuVentoInt'), fai: () => cambiaIntensita(l)});
+      voci.push({et: t('menuVentoInt'), fai: () => cambiaIntensita(l)});
       voci.push({et: t('menuSposta'), fai: () => spostaElemento(l)});
     } else {
       voci.push({et: t('menuVertici'), fai: () => modificaVertici(l)});

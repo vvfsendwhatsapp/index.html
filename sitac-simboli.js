@@ -901,6 +901,29 @@ aggL('elettrodotto_off','zona',null,'Linea elettrica disattivata','Power line of
 /* Il principale è un blocco ROSSO PIENO, non un contorno: le due secondarie
    sono le sole aperte, ed è quello che le distingue a colpo d'occhio dalla
    principale — non lo spessore soltanto. */
+/* Il principale è un blocco ROSSO PIENO, non un contorno: le due secondarie
+   sono le sole aperte, ed è quello che le distingue a colpo d'occhio dalla
+   principale — non lo spessore soltanto.
+   La punta è dritta nel verso di percorrenza: un asse di sviluppo dice dove
+   il fuoco VA, e la direzione è quella della linea. `incl` e `fuori` restano
+   fuori: sono dell'accensione, dove la freccia esce di traverso perché
+   indica da che parte si manda il fuoco, non dove finisce il tracciato. */
+aggL('asse_principale','evoluzione',null,'Asse di sviluppo principale','Head of the fire',
+  {color:C.rosso, weight:11, lineCap:'butt'},
+  {deco:{tipo:'punta', passo:0, offset:'100%', dim:38, pieno:1, sempre:1}});
+
+aggL('asse_veloce','evoluzione',null,'Asse secondario (veloce)','Secondary axis (fast)',
+  {color:'#ffffff', weight:7, lineCap:'butt'},
+  {bordo:C.rosso, guaina:{weight:11},
+   deco:[{tipo:'punta', passo:0, offset:'100%', dim:30, sempre:1, bordoW:2},
+         {tipo:'tappo', passo:0, offset:4, dim:14}]});
+
+aggL('asse_lento','evoluzione',null,'Asse secondario (lento)','Secondary axis (slow)',
+  {color:'#ffffff', weight:4.5, lineCap:'butt'},
+  {bordo:C.rosso, guaina:{weight:8},
+   deco:[{tipo:'punta', passo:0, offset:'100%', dim:22, sempre:1, bordoW:1.75},
+         {tipo:'tappo', passo:0, offset:3, dim:11}]});
+/*              
 aggL('asse_principale','evoluzione',null,'Asse di sviluppo principale','Head of the fire',
   {color:C.rosso, weight:11, lineCap:'butt'},
   {deco:{tipo:'punta', passo:0, offset:'100%', dim:38, pieno:1, sempre:1}});
@@ -914,6 +937,7 @@ aggL('asse_lento','evoluzione',null,'Asse secondario (lento)','Secondary axis (s
   {bordo:C.rosso, guaina:{weight:8},
    deco:[{tipo:'punta', passo:0, offset:'100%', dim:22, sempre:1},
          {tipo:'tappo', passo:0, offset:3, dim:11}]});
+*/
 /* Doppia linea parallela a denti: il tracciato è la linea di monte, il
    motivo aggiunge quella affiancata e le traversine. */
 aggL('fronte','evoluzione',null,'Fronte dell\u2019incendio','Fire front',
