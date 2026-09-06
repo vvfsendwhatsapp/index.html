@@ -669,8 +669,25 @@ function decoGlifo(tipo, opz){
     case 'freccia':          // ripetuta lungo la linea (senso di marcia)
     case 'punta': {          // una sola, sull'ultimo vertice
       const hT = dim * 1.15, bT = dim;
-      w = Math.ceil(bT) + 4;
-      h = Math.ceil(hT) + 6;
+      /* `incl` ruota la punta rispetto al verso di percorrenza: 0 è avanti
+         (assi di sviluppo, bonifica), 90 di traverso — l'accensione per
+         linee, dove la freccia dice da che parte si manda il fuoco e non
+         dove finisce la linea d'appoggio. `lato` sceglie quale fianco. */
+      const gr = (o.incl || 0) * lato;
+      /* `fuori` sposta il glifo di traverso al tracciato, quel tanto che
+         porta la BASE sul bordo della linea invece che sul suo asse: senza,
+         la punta sta a cavallo del tratto e la base sparisce dentro. Lo
+         passa la riga della tavola, che è l'unico posto dove si sa quanto
+         è spessa la linea che porta il motivo. */
+      const sp = (o.fuori || 0) * lato;
+      /* Il riquadro va misurato SULLA figura ruotata e spostata: con
+         l'ingombro della figura dritta il vertice usciva dal bordo
+         dell'icona e veniva tagliato via. Stesso conto del `case 'pilone'`,
+         per la stessa ragione. */
+      const a = Math.abs(gr) * Math.PI / 180;
+      w = Math.ceil(bT * Math.cos(a) + hT * Math.sin(a)
+                    + Math.abs(o.fuori || 0) * 2) + 6;
+      h = Math.ceil(hT * Math.cos(a) + bT * Math.sin(a)) + 6;
       const cx = w / 2, cy = h / 2;
       const ay = cy - hT * 2 / 3, by = cy + hT / 3;
       const chiudi = o.aperta ? '' : 'Z';
@@ -679,14 +696,8 @@ function decoGlifo(tipo, opz){
         + ` fill="${pieno ? col : '#fff'}" stroke="${col}"`
         + ` stroke-width="${pieno ? 1.2 : 2.2}" stroke-linejoin="round"`
         + ` stroke-linecap="butt"/>`;
-      /* `incl` ruota la punta rispetto al verso di percorrenza: 0 è avanti
-         (assi di sviluppo, bonifica), 90 di traverso — l'accensione per
-         linee, dove la freccia dice da che parte si manda il fuoco e non
-         dove finisce la linea d'appoggio. `lato` sceglie quale fianco.
-         La rotazione è attorno al centro del glifo, che è il punto che sta
-         sul tracciato: la punta gira restando agganciata alla linea. */
-      const gr = (o.incl || 0) * lato;
-      if (gr) d = `<g transform="rotate(${f(gr)} ${f(cx)} ${f(cy)})">${d}</g>`;
+      if (gr || sp)
+        d = `<g transform="translate(${f(sp)} 0) rotate(${f(gr)} ${f(cx)} ${f(cy)})">${d}</g>`;
       break;
     }
 
@@ -996,9 +1007,10 @@ aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','
    `stati:1` a fare lo scambio, senza toccare il tratto della linea: su una
    fascia spessa il tratteggio diventa una fila di quadrotti. */
 aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
-  {color:C.rosso, weight:3},
-  {stati:1, lato:1,
-   deco:{tipo:'punta', dim:24, offset:'100%', incl:90, pieno:1}});
+  {color:'#ffffff', weight:5, lineCap:'butt', className:'sitac-ombra'},
+  {stati:1, lato:1, punti2:1, bordo:C.rosso,
+   guaina:{weight:9, lineCap:'butt', className:'sitac-ombra'},
+   deco:{tipo:'punta', dim:24, passo:0, offset:'100%', incl:90, pieno:1, fuori:16}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 

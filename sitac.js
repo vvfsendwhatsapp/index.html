@@ -1358,7 +1358,9 @@ function mostraComandoAfferente(sigla, nome){
     return {offset, repeat: passo,
       symbol: L.Symbol.marker({rotate: !dc.dritto,
         markerOptions:{interactive:false,
-          icon: L.divIcon({className:'sitac-deco', iconSize:[g.w, g.h],
+          icon: L.divIcon({
+            className: 'sitac-deco' + (dc.classe ? ' ' + dc.classe : ''),
+            iconSize:[g.w, g.h],
             iconAnchor:[g.w / 2, g.h / 2], html: NS.SITAC_DECO_SVG(g)})}})};
   }
 
