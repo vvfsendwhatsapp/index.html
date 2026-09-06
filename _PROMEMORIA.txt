@@ -16,3 +16,4 @@
 * bonifica la B va verticale rispetto alla pagina
 * espansione menu sempre al top colonna
 * frecce 45 attacco fianco vanno spostate e non messe in mezzo
+anteprim e loghi piu semplici e piu larghe
