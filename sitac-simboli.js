@@ -635,18 +635,19 @@ function decoGlifo(tipo, opz){
        `dim` è la base. */
     case 'puntaVuota': {
       const b = dim, alt = dim * 0.85;
-      w = b + 6; h = alt + 6;
-      const cx = w / 2;
-      /* Due elementi, non uno. Il triangolo pieno di bianco serve a coprire
-         la carta sotto; il bordo è una spezzata APERTA — lato destro, punta,
-         lato sinistro — che salta la base. Un `<path>` chiuso disegnerebbe
-         anche quella, e sulla foto della tavola lì non c'è: la base è dove
-         la fascia continua, e una riga rossa di traverso la spezzerebbe in
-         due segni invece di uno. */
-      const x1 = cx - b/2, x2 = cx + b/2, y = h - 3;
-      d = `<path d="M${f(cx)} 3L${f(x2)} ${f(y)}L${f(x1)} ${f(y)}Z"`
+      /* Il triangolo esce di TRAVERSO al tracciato, non nel verso di
+         percorrenza: sulla tavola dice da che parte si accende, non dove
+         finisce la fascia. Gli assi si scambiano — la base sta lungo la
+         linea, la punta sporge lateralmente — e `lato` decide da che parte.
+         `w` e `h` seguono lo scambio: il glifo è largo quanto l'altezza
+         della punta e alto quanto la sua base. */
+      w = alt * 2 + 6; h = b + 6;
+      const cy = h / 2, cx = w / 2;
+      const xp = cx + lato * alt;          // vertice, di traverso
+      const y1 = cy - b/2, y2 = cy + b/2;  // base, lungo la linea
+      d = `<path d="M${f(xp)} ${f(cy)}L${f(cx)} ${f(y1)}L${f(cx)} ${f(y2)}Z"`
         + ` fill="#ffffff" stroke="none"/>`
-        + `<path d="M${f(x1)} ${f(y)}L${f(cx)} 3L${f(x2)} ${f(y)}"`
+        + `<path d="M${f(cx)} ${f(y1)}L${f(xp)} ${f(cy)}L${f(cx)} ${f(y2)}"`
         + ` fill="none" stroke="${col}" stroke-width="2.8"`
         + ` stroke-linejoin="miter" stroke-linecap="butt"/>`;
       break;
@@ -1008,7 +1009,7 @@ aggL('accensione_linee','azioni','sgTerra','Accensione per linee','Line firing',
   {color:'#ffffff', weight:7, lineCap:'butt', lineJoin:'miter'},
   {stati:1, lato:1, vuota:1, bordo:C.rosso,
    guaina:{weight:13, lineCap:'butt', lineJoin:'miter'},
-   deco:{tipo:'puntaVuota', dim:26, passo:0, offset:'100%'}});
+   deco:{tipo:'puntaVuota', dim:26, passo:0, offset:'50%'}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
