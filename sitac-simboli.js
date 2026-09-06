@@ -1010,7 +1010,7 @@ aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line fi
   {color:'#ffffff', weight:7, lineCap:'butt', lineJoin:'miter'},
   {stati:1, lato:1, vuota:1, bordo:C.rosso,
    guaina:{weight:13, closePath: true/*lineCap:'round'*/, lineJoin:'miter'},
-   deco:{tipo:'puntaVuota', dim:26, passo:'100%'}});
+   deco:{tipo:'puntaVuota', dim:26, passo:'0'}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
