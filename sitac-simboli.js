@@ -561,6 +561,7 @@ function decoGlifo(tipo, opz){
   const pieno = !!o.pieno;
   const n = Math.max(1, o.n || 1);
   const dim = o.dim || 14;
+  const dim2 = 14;
   const riempi = pieno ? col : '#fff';
   /* `lato` dice da che parte del tracciato guarda il motivo: +1 a destra del
      verso di percorrenza, -1 a sinistra. Lo sceglie chi disegna con un terzo
@@ -634,7 +635,7 @@ function decoGlifo(tipo, opz){
        larghezza sembrerebbe la linea che finisce, non una freccia.
        `dim` è la base. */
     case 'puntaVuota': {
-      const b = dim, alt = dim /* * 0.85*/;
+      const b = dim2, alt = dim2 * 0.5;
       /* Il triangolo esce di TRAVERSO al tracciato: sulla tavola dice da che
          parte si accende, non dove finisce la fascia.
          La tela è larga il doppio dell'altezza della punta perché il glifo
@@ -644,7 +645,7 @@ function decoGlifo(tipo, opz){
          era quello che si vedeva prima: la base spariva e il triangolo
          sembrava sbucare dal mezzo. */
       const semiFascia = 6.5;              // metà della guaina (13px)
-      w = (alt + semiFascia) * 2 + 6;
+      w = (alt + semiFascia) /* * 2 + 6*/;
       h = b + 6;
       const cy = h / 2, cx = w / 2;
       const xb = cx + lato * semiFascia;    // base, sul bordo della fascia
