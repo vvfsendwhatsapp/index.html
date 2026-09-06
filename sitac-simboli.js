@@ -1000,10 +1000,7 @@ function anteprimaLinea(k, stato){
      due, e l'anteprima deve mostrarli tutti o il pulsante mente. */
   [].concat(d.deco || []).forEach(dc => {
     const pieno = !!(dc.pieno && !previsto);
-    const g = decoGlifo(dc.tipo,
-      {col, pieno, n:dc.n, forma:dc.forma, dim:dc.dim, testo:dc.testo,
-       aperta:dc.aperta, incl:dc.incl, fuori:dc.fuori, bordoW:dc.bordoW,
-       lato:1});
+    const g = decoGlifo(dc.tipo, Object.assign({}, dc, {col, pieno, lato:1}));
     /* I motivi che non ruotano col tracciato non devono ruotare nemmeno
        qui: il glifo è disegnato con la linea verticale, ma un pilone o un
        seggiolino stanno dritti sulla pagina, e ruotarli di 90° per

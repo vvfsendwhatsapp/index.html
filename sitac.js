@@ -1336,14 +1336,14 @@ function mostraComandoAfferente(sigla, nome){
       : (dc.pieno && !(def.stati && stato === 'previsto'));
     const col = dc.col || def.bordo || def.color || COL.rosso;
 
-    /* Tutto passa dal glifo, punte comprese. `L.Symbol.arrowHead` ancorava
-       il triangolo per l'apice e non offriva alternative: il tratto arrivava
-       fin sulla punta e sporgeva oltre. Il glifo lo ancora per il baricentro
-       e il vertice finale resta coperto dalla figura. */
+    /* Si passa l'intero `dc` invece di elencare le chiavi una per una:
+       `incl`, `fuori` e `bordoW` si sono persi tutti e tre qui, in silenzio,
+       perché aggiungere un parametro al glifo voleva dire ricordarsi di
+       aggiungerlo anche in questo elenco. `decoGlifo` legge solo le chiavi
+       che conosce, quindi `tipo`, `passo` e `offset` di troppo non danno
+       fastidio. */
     const g = NS.SITAC_DECO(dc.tipo,
-      {col, pieno, n: dc.n, forma: dc.forma, dim: dc.dim, testo: dc.testo,
-       aperta: dc.aperta, incl: dc.incl, fuori: dc.fuori, bordoW: dc.bordoW,
-       lato, giro});
+      Object.assign({}, dc, {col, pieno, lato, giro}));
 
     /* `passo:'auto'` sono i motivi che si toccano fra loro — i triangoli
        della difesa in linea, la greca della ricognizione, i denti del fronte:
