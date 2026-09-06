@@ -957,7 +957,7 @@ aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line fi
   {stati:1, lato:1, punti2:1, vuota:1, bordo:C.rosso,
    guaina:{weight:22, lineCap:'butt', className:'sitac-ombra'},
    deco:{tipo:'punta', dim:40, passo:0, offset:'100%', incl:90,
-         pieno:1, fuori:-5.5, bordoW:3}});
+         pieno:1, fuori:-4, bordoW:6}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
