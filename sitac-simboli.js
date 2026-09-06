@@ -997,19 +997,15 @@ aggL('bonifica','azioni','sgTerra','Bonifica','Mop up',
                    pieno:1, verso:0}]});
 aggL('linea_sicurezza','azioni','sgControfuoco','Creazione linea di sicurezza','Creation of a safety line',
   {color:C.rosso, weight:3}, {stati:1, deco:{tipo:'bifronte', passo:'auto', dim:12, pieno:1}});
-/* La linea è la linea di appoggio, spessa; il fuoco si manda di lato, e il
-   braccio con la punta gira di 90° verso il fianco scelto. */
-/* La linea è la linea di appoggio; il fuoco si manda di lato, e il braccio
-   con la punta gira di 90° verso il fianco scelto.
-   `vuota` dice che fra prevista ed effettuata NON cambia il tratto ma il
-   riempimento: bianca col bordo rosso quando è prevista, rossa piena quando
-   è fatta. Il tratteggio qui non si poteva usare — su una linea spessa nove
-   pixel diventa una fila di quadrotti, ed è quello che si vedeva. */
-aggL('accensione_linee','azioni','sgTerra','Accensione per linee','Line firing',
+/* Accensione e linea di sicurezza sono lo stesso gesto in due tempi: si
+   crea la linea d'appoggio, poi si accende. Nella tavola stanno nello
+   stesso riquadro, e separarle costringeva a cercarle in due punti della
+   barra mentre si sta facendo una cosa sola. */
+aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line firing',
   {color:'#ffffff', weight:7, lineCap:'butt', lineJoin:'miter'},
   {stati:1, lato:1, vuota:1, bordo:C.rosso,
    guaina:{weight:13, lineCap:'butt', lineJoin:'miter'},
-   deco:{tipo:'puntaVuota', dim:26, passo:0, offset:'50%'}});
+   deco:{tipo:'puntaVuota', dim:26, passo:'50%'}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
