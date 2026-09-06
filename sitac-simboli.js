@@ -686,8 +686,8 @@ function decoGlifo(tipo, opz){
          per la stessa ragione. */
       const a = Math.abs(gr) * Math.PI / 180;
       w = Math.ceil(bT * Math.cos(a) + hT * Math.sin(a)
-                    + Math.abs(o.fuori || 0) * 2) + 6;
-      h = Math.ceil(hT * Math.cos(a) + bT * Math.sin(a)) + 6;
+                    + Math.abs(o.fuori || 0) * 2 + bw * 4) + 6;
+      h = Math.ceil(hT * Math.cos(a) + bT * Math.sin(a) + bw * 4) + 6;
       const cx = w / 2, cy = h / 2;
       const ay = cy - hT * 2 / 3, by = cy + hT / 3;
       const chiudi = o.aperta ? '' : 'Z';
@@ -771,17 +771,22 @@ function decoGlifo(tipo, opz){
        la punta a parte, il vuoto avrebbe lasciato l'asta piena — mezza
        freccia prevista e mezza fatta. `dim` è la lunghezza del braccio. */
     case 'ortogonale': {
-      /* Il contorno della punta segue quello della linea che la porta: il
-         bordo rosso è la differenza fra guaina e fascia, mezza per parte, e
-         una punta con un filo da 1,2 su una fascia da 16 sembra disegnata
-         da un'altra mano. `bordoW` lo passa la riga della tavola, che è
-         l'unico posto dove si conoscono i due calibri. */
-      const sw = o.bordoW || (pieno ? 1.2 : 2.2);
-      d = `<path d="M${f(cx - bT/2)} ${f(by)}L${f(cx)} ${f(ay)}`
-        + `L${f(cx + bT/2)} ${f(by)}${chiudi}"`
-        + ` fill="${pieno ? col : '#fff'}" stroke="${col}"`
-        + ` stroke-width="${f(sw)}" stroke-linejoin="round"`
-        + ` stroke-linecap="butt"/>`;
+      /* Il bordo si disegna come una seconda copia del triangolo, sotto,
+         con lo stroke più largo: è la stessa costruzione della guaina sulla
+         linea, e per la stessa ragione. Un solo `stroke` sta a cavallo del
+         contorno — metà dentro e metà fuori — quindi a parità di numero
+         sporge la metà di quanto sporge la guaina, e la punta sembra
+         disegnata con una penna più sottile. */
+      const via = `M${f(cx - bT/2)} ${f(by)}L${f(cx)} ${f(ay)}`
+        + `L${f(cx + bT/2)} ${f(by)}${chiudi}`;
+      const bw = o.bordoW || 0;
+      d = (bw
+        ? `<path d="${via}" fill="none" stroke="${col}"`
+          + ` stroke-width="${f(bw * 2)}" stroke-linejoin="round"/>`
+        : '')
+        + `<path d="${via}" fill="${pieno ? col : '#fff'}" stroke="${col}"`
+        + ` stroke-width="${f(bw || (pieno ? 1.2 : 2.2))}"`
+        + ` stroke-linejoin="round" stroke-linecap="butt"/>`;
       break;
     }
 
@@ -1014,7 +1019,7 @@ aggL('accensione_linee','azioni','sgControfuoco','Accensione per linee','Line fi
   {stati:1, lato:1, punti2:1, vuota:1, bordo:C.rosso,
    guaina:{weight:22, lineCap:'butt', className:'sitac-ombra'},
    deco:{tipo:'punta', dim:40, passo:0, offset:'100%', incl:90,
-         pieno:1, fuori:-4, bordoW:3}});
+         pieno:1, fuori:-5.5, bordoW:3}});
 aggL('via_fuga','azioni','sgEvacuazione','Via di fuga per evacuazione','Evacuation escape route',
   {color:C.nero, weight:2.6}, {stati:1, deco:{tipo:'chevron', passo:'33%', dim:16, pieno:1}});
 
