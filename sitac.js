@@ -1411,6 +1411,7 @@ function mostraComandoAfferente(sigla, nome){
      tracciato rispetto a cui stare da una parte. Annullando resta il lato
      predefinito, che è meglio di un tracciato senza frecce. */
   async function chiediLato(layer){
+    console.log('chiediLato', layer._tipo, LIN[layer._tipo] && LIN[layer._tipo].lato);
     const def = LIN[layer._tipo];
     if (!def || !def.lato) return;
     if (layer._lato == null) layer._lato = 1;
