@@ -643,7 +643,7 @@ function decoGlifo(tipo, opz){
          fascia invece che sul suo asse. Metà punta dentro la fascia bianca
          era quello che si vedeva prima: la base spariva e il triangolo
          sembrava sbucare dal mezzo. */
-      const semiFascia = 5.5;              // metà della guaina (13px)
+      const semiFascia = 5;              // metà della guaina (13px)
       w = (alt + semiFascia) * 2 + 6;
       h = b + 6;
       const cy = h / 2, cx = w / 2;
