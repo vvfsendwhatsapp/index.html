@@ -2609,9 +2609,12 @@ function mostraComandoAfferente(sigla, nome){
       if (def && def.paese)
         voci.push({et: t('menuPaese'), fai: () => cambiaPaese(l)});
       if (def && def.r)
-        voci.push({et: t('menuSposta'), fai: () => spostaElemento(l)});
-      if (def && def.r)
         voci.push({et: t('menuDirezione'), fai: () => ridaiDirezione(l)});
+      /* Solo pendenza e vento: sugli altri orientabili — TP, lanci —
+         l'intensità non esiste come concetto. */
+      if (/^(pend_|vento_)/.test(l._tipo || ''))
+        voci.push({et: t('menuVentoInt'), fai: () => cambiaIntensita(l)});
+      voci.push({et: t('menuSposta'), fai: () => spostaElemento(l)});
       /* Solo pendenza e vento: sugli altri orientabili — TP, lanci —
          l'intensità non esiste come concetto. */
       if (/^(pend_|vento_)/.test(l._tipo || ''))
