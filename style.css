@@ -5937,15 +5937,6 @@ select:focus {
     font-family: "Courier New", monospace;
 }
 
-/* Ombra sulla sola accensione per linee: la fascia bianca su carta chiara
-   sparirebbe, e il contorno rosso da solo non basta a staccarla dal fondo.
-   Le altre linee della tavola sono piene e colorate, quindi non ne hanno
-   bisogno — un'ombra su tutto costerebbe un passaggio di composizione per
-   ogni tracciato senza aggiungere niente. */
-#sitac-app .sitac-ombra {
-    filter: drop-shadow(0 0 3px rgb(255, 0, 0));
-}
-
 /* ==========================================================
    ==========================================================
    RESPONSIVE
