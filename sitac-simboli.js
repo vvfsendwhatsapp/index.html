@@ -645,7 +645,7 @@ function decoGlifo(tipo, opz){
          era quello che si vedeva prima: la base spariva e il triangolo
          sembrava sbucare dal mezzo. */
       const semiFascia = 6.5;              // metà della guaina (13px)
-      w = 5/*(alt + semiFascia) * 2 + 6*/;
+      w = (alt /*+ semiFascia*/) * 2 + 6; // (7+3.25)*2+6    10.25*2+6   27
       h = b + 6;
       const cy = h / 2, cx = w / 2;
       const xb = cx + lato * semiFascia;    // base, sul bordo della fascia
